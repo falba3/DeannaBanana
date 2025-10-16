@@ -9,7 +9,7 @@ output_path = input("Enter output file path (or leave blank for default): ")
 # Call your function
 generate_tryon(face_path, clothing_path, prompt_text, output_path)
 
-# Face Path --          people/person1.jpg
+# Face Path --          people/person2.jpg
 # Clothing Path --      clothes/clothes1.jpeg
 # Prompt Text --        Combine the first image's face with the second image's clothing piece. The person must be wearing the clothing piece. Remove all other accessories that might interfere with seeing the clothing piece which is the highlight. 
-# Output Path --        outputs/sample1
+# Output Path --        outputs/sample2.png
