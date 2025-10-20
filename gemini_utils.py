@@ -97,16 +97,16 @@ def generate_tryon(face_image_path, clothing_image_path, prompt, out_path=None):
         raise RuntimeError("No image was returned by the model.")
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Two-image virtual try-on using Gemini 2.5 image model")
-    parser.add_argument("--face", required=True, help="Path to the person/face image")
-    parser.add_argument("--clothing", required=True, help="Path to the clothing image")
-    parser.add_argument("--prompt", default="", help="Optional guidance/instruction text")
-    parser.add_argument("--out", default="", help="Optional output file path (first image)")
-    args = parser.parse_args()
+# def main():
+#     parser = argparse.ArgumentParser(description="Two-image virtual try-on using Gemini 2.5 image model")
+#     parser.add_argument("--face", required=True, help="Path to the person/face image")
+#     parser.add_argument("--clothing", required=True, help="Path to the clothing image")
+#     parser.add_argument("--prompt", default="", help="Optional guidance/instruction text")
+#     parser.add_argument("--out", default="", help="Optional output file path (first image)")
+#     args = parser.parse_args()
 
-    out_path = args.out if args.out else None
-    generate_tryon(args.face, args.clothing, args.prompt, out_path)
+#     out_path = args.out if args.out else None
+#     generate_tryon(args.face, args.clothing, args.prompt, out_path)
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
