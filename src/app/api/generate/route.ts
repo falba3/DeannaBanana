@@ -1,4 +1,3 @@
-
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -9,7 +8,7 @@ import path from "path";
 
 
 
-const MODEL_NAME = "gemini-pro-vision";
+const MODEL_NAME = "models/gemini-2.5-flash-image";
 
 const API_KEY = process.env.GEMINI_API_KEY as string;
 
@@ -95,11 +94,11 @@ export async function POST(req: NextRequest) {
 
     const parts = [
 
-      fileToGenerativePart(cloth, "image/jpeg"),
-
       fileToGenerativePart(person, "image/jpeg"),
 
-      { text: "Composite the person to be wearing the provided clothing item. Keep identity, facial features, body proportions, and lighting consistent. Produce a photorealistic image." },
+      fileToGenerativePart(cloth, "image/jpeg"),
+      
+      { text: "Composite the first image's person to be wearing the second image's provided clothing item. Keep the first person's identity, facial features, body proportions, and lighting consistent. Produce a photorealistic image." },
 
     ];
 
@@ -114,6 +113,20 @@ export async function POST(req: NextRequest) {
         safetySettings,
 
     });
+
+
+
+    if (!result.response.candidates || result.response.candidates.length === 0) {
+
+      return NextResponse.json(
+
+        { error: "No candidates returned from the model" },
+
+        { status: 500 }
+
+      );
+
+    }
 
 
 
@@ -138,4 +151,3 @@ export async function POST(req: NextRequest) {
   }
 
 }
-
