@@ -57,20 +57,35 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
-      <main className="container mx-auto flex flex-col items-center justify-center p-4">
-        <h1 className="mb-8 text-4xl font-bold">Virtual Try-On</h1>
+    <div className="flex min-h-screen flex-col bg-white">
+      {/* Header */}
+      <header className="w-full bg-white py-6 border-b border-gray-100">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <Image
+            src="/bvmprs-logo.svg"
+            alt="BVMPRS BRAND"
+            width={200}
+            height={40}
+            className="object-contain"
+            priority
+          />
+          <div className="text-[#0A0F2C] text-sm font-light">Virtual Try-On Demo</div>
+        </div>
+      </header>
+      
+      <main className="container mx-auto flex flex-col items-center justify-center p-8 text-[#0A0F2C]">
+        <h1 className="mb-12 text-4xl font-light tracking-wider uppercase">Virtual Try-On Experience</h1>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div className="flex flex-col items-center">
-            <h2 className="mb-4 text-2xl font-semibold">1. Choose a Clothing Item</h2>
-            <div className="h-96 w-full overflow-y-auto rounded-lg border-4 border-gray-300 p-4">
-              <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 w-full">
+          <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-lg">
+            <h2 className="mb-6 text-2xl font-light uppercase tracking-wider text-[#0A0F2C]">1. Select Your Style</h2>
+            <div className="h-[500px] w-full overflow-y-auto custom-scrollbar rounded-lg border border-gray-200 p-6">
+              <div className="grid grid-cols-2 gap-6">
                 {clothes.map((cloth) => (
                   <div
                     key={cloth}
-                    className={`cursor-pointer rounded-lg border-4 ${
-                      selectedCloth === cloth ? "border-blue-500" : "border-transparent"
+                    className={`cursor-pointer rounded-lg transition-all duration-300 hover:scale-105 ${
+                      selectedCloth === cloth ? "ring-2 ring-[#0A0F2C] shadow-lg" : "border border-gray-200"
                     }`}
                     onClick={() => setSelectedCloth(cloth)}
                   >
@@ -87,14 +102,14 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col items-center">
-            <h2 className="mb-4 text-2xl font-semibold">2. Choose a Person or Upload</h2>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-lg">
+            <h2 className="mb-6 text-2xl font-light uppercase tracking-wider text-[#0A0F2C]">2. Choose Your Model</h2>
+            <div className="grid grid-cols-3 gap-6">
               {people.map((person) => (
                 <div
                   key={person}
-                  className={`cursor-pointer rounded-lg border-4 ${
-                    selectedPerson === person ? "border-blue-500" : "border-transparent"
+                  className={`cursor-pointer rounded-lg transition-all duration-300 hover:scale-105 ${
+                    selectedPerson === person ? "ring-2 ring-[#0A0F2C] shadow-lg" : "border border-gray-200"
                   }`}
                   onClick={() => {
                     setSelectedPerson(person);
@@ -111,7 +126,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <div className="mt-4">
+            <div className="mt-8">
               <input
                 type="file"
                 accept="image/*"
@@ -121,45 +136,47 @@ export default function Home() {
               />
               <label
                 htmlFor="file-upload"
-                className="cursor-pointer rounded-lg bg-blue-500 px-8 py-4 text-white hover:bg-blue-600"
+                className="cursor-pointer rounded-lg border-2 border-[#0A0F2C] px-8 py-4 text-[#0A0F2C] transition-all duration-300 hover:bg-[#0A0F2C] hover:text-white inline-block"
               >
-                Upload Image
+                Upload Your Photo
               </label>
             </div>
             {uploadedImage && (
-              <div className="mt-4">
+              <div className="mt-6">
                 <Image
                   src={uploadedImage}
                   alt="Uploaded"
                   width={150}
                   height={150}
-                  className="rounded-lg"
+                  className="rounded-lg border border-gray-200 shadow-md"
                 />
               </div>
             )}
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-12">
           <button
             onClick={handleGenerate}
-            className="rounded-lg bg-blue-500 px-8 py-4 text-white hover:bg-blue-600 disabled:bg-gray-400"
+            className="rounded-lg bg-[#0A0F2C] px-12 py-4 text-white font-light tracking-wider hover:bg-[#162052] transition-all duration-300 disabled:bg-gray-200 disabled:text-gray-400"
             disabled={!selectedCloth || (!selectedPerson && !uploadedImage)}
           >
-            Generate Image
+            GENERATE LOOK
           </button>
         </div>
 
         {generatedImage && (
-          <div className="mt-8">
-            <h2 className="mb-4 text-2xl font-semibold">Generated Image</h2>
-            <Image
-              src={`data:${generatedImage.mimeType};base64,${generatedImage.data}`}
-              alt="Generated Image"
-              width={400}
-              height={400}
-              className="rounded-lg"
-            />
+          <div className="mt-12 bg-white p-8 rounded-xl shadow-lg">
+            <h2 className="mb-6 text-2xl font-light uppercase tracking-wider text-[#0A0F2C]">Your Generated Look</h2>
+            <div className="border border-gray-200 rounded-lg p-2 shadow-sm">
+              <Image
+                src={`data:${generatedImage.mimeType};base64,${generatedImage.data}`}
+                alt="Generated Image"
+                width={400}
+                height={400}
+                className="rounded-lg"
+              />
+            </div>
           </div>
         )}
       </main>
