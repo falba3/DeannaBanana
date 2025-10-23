@@ -101,7 +101,19 @@ export default function Home() {
               ))}
             </div>
             <div className="mt-4">
-              <input type="file" accept="image/*" onChange={handleUpload} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleUpload}
+                className="hidden"
+                id="file-upload"
+              />
+              <label
+                htmlFor="file-upload"
+                className="cursor-pointer rounded-lg bg-blue-500 px-8 py-4 text-white hover:bg-blue-600"
+              >
+                Upload Image
+              </label>
             </div>
             {uploadedImage && (
               <div className="mt-4">
