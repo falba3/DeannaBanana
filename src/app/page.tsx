@@ -10,7 +10,7 @@ export default function Home() {
   const [selectedCloth, setSelectedCloth] = useState<string | null>(null);
   const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<any | null>(null);
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -24,9 +24,27 @@ export default function Home() {
     }
   };
 
-  const handleGenerate = () => {
-    // Placeholder for image generation logic
-    setGeneratedImage("/outputs/sample1.png");
+  const handleGenerate = async () => {
+    if (!selectedCloth || (!selectedPerson && !uploadedImage)) {
+      return;
+    }
+
+    const person = selectedPerson ? `/people/${selectedPerson}` : uploadedImage;
+
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cloth: `/clothes/${selectedCloth}`, person }),
+    });
+
+    if (response.ok) {
+      const { image } = await response.json();
+      setGeneratedImage(image.inlineData);
+    } else {
+      console.error("Failed to generate image");
+    }
   };
 
   return (
@@ -113,8 +131,8 @@ export default function Home() {
           <div className="mt-8">
             <h2 className="mb-4 text-2xl font-semibold">Generated Image</h2>
             <Image
-              src={generatedImage}
-              alt="Generated"
+              src={`data:${generatedImage.mimeType};base64,${generatedImage.data}`}
+              alt="Generated Image"
               width={400}
               height={400}
               className="rounded-lg"
