@@ -1,13 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
-const clothes = ["clothes1.jpeg", "clothes2.jpeg"];
 const people = ["person1.jpg", "person2.jpg", "person3.jpg"];
 
 export default function Home() {
+  const [clothes, setClothes] = useState<string[]>([]);
   const [selectedCloth, setSelectedCloth] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchClothes = async () => {
+      const response = await fetch('/api/clothes');
+      const data = await response.json();
+      setClothes(data);
+    };
+    fetchClothes();
+  }, []);
   const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<any | null>(null);
@@ -55,24 +64,26 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <div className="flex flex-col items-center">
             <h2 className="mb-4 text-2xl font-semibold">1. Choose a Clothing Item</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {clothes.map((cloth) => (
-                <div
-                  key={cloth}
-                  className={`cursor-pointer rounded-lg border-4 ${
-                    selectedCloth === cloth ? "border-blue-500" : "border-transparent"
-                  }`}
-                  onClick={() => setSelectedCloth(cloth)}
-                >
-                  <Image
-                    src={`/clothes/${cloth}`}
-                    alt={cloth}
-                    width={200}
-                    height={200}
-                    className="rounded-lg"
-                  />
-                </div>
-              ))}
+            <div className="h-96 w-full overflow-y-auto rounded-lg border-4 border-gray-300 p-4">
+              <div className="grid grid-cols-2 gap-4">
+                {clothes.map((cloth) => (
+                  <div
+                    key={cloth}
+                    className={`cursor-pointer rounded-lg border-4 ${
+                      selectedCloth === cloth ? "border-blue-500" : "border-transparent"
+                    }`}
+                    onClick={() => setSelectedCloth(cloth)}
+                  >
+                    <Image
+                      src={`/clothes/${cloth}`}
+                      alt={cloth}
+                      width={200}
+                      height={200}
+                      className="rounded-lg"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
