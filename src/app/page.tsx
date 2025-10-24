@@ -7,7 +7,8 @@ const people = ["person1.jpg", "person2.jpg", "person3.jpg"];
 
 export default function Home() {
   const [clothes, setClothes] = useState<string[]>([]);
-  const [selectedCloth, setSelectedCloth] = useState<string | null>(null);
+  const [selectedClothes, setSelectedClothes] = useState<string[]>([]);
+  const [generatedImages, setGeneratedImages] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchClothes = async () => {
@@ -19,7 +20,14 @@ export default function Home() {
   }, []);
   const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [generatedImage, setGeneratedImage] = useState<any | null>(null);
+
+  const handleClothClick = (cloth: string) => {
+    setSelectedClothes((prevSelected) =>
+      prevSelected.includes(cloth)
+        ? prevSelected.filter((item) => item !== cloth)
+        : [...prevSelected, cloth]
+    );
+  };
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -34,45 +42,48 @@ export default function Home() {
   };
 
   const handleGenerate = async () => {
-    if (!selectedCloth || (!selectedPerson && !uploadedImage)) {
+    if (selectedClothes.length === 0 || (!selectedPerson && !uploadedImage)) {
       return;
     }
 
+    setGeneratedImages([]); // Clear previous generated images
     const person = selectedPerson ? `/people/${selectedPerson}` : uploadedImage;
 
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ cloth: `/clothes/${selectedCloth}`, person }),
-    });
+    for (const cloth of selectedClothes) {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cloth: `/clothes/${cloth}`, person }),
+      });
 
-    if (response.ok) {
-      const { image } = await response.json();
-      setGeneratedImage(image.inlineData);
-    } else {
-      console.error("Failed to generate image");
+      if (response.ok) {
+        const { image } = await response.json();
+        setGeneratedImages((prevImages) => [...prevImages, image.inlineData]);
+      } else {
+        console.error(`Failed to generate image for ${cloth}`);
+      }
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-purple-100">
       <main className="container mx-auto flex flex-col items-center justify-center p-4">
         <h1 className="mb-8 text-4xl font-bold">Virtual Try-On</h1>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <div className="flex flex-col items-center">
             <h2 className="mb-4 text-2xl font-semibold">1. Choose a Clothing Item</h2>
-            <div className="h-96 w-full overflow-y-auto rounded-lg border-4 border-gray-300 p-4">
+            <div className="h-96 w-full overflow-y-auto rounded-lg border-4 border-purple-300 p-4">
               <div className="grid grid-cols-2 gap-4">
                 {clothes.map((cloth) => (
                   <div
                     key={cloth}
                     className={`cursor-pointer rounded-lg border-4 ${
-                      selectedCloth === cloth ? "border-blue-500" : "border-transparent"
+                      selectedClothes.includes(cloth) ? "border-purple-500" : "border-transparent"
                     }`}
-                    onClick={() => setSelectedCloth(cloth)}
+                    onClick={() => handleClothClick(cloth)}
                   >
                     <Image
                       src={`/clothes/${cloth}`}
@@ -94,7 +105,7 @@ export default function Home() {
                 <div
                   key={person}
                   className={`cursor-pointer rounded-lg border-4 ${
-                    selectedPerson === person ? "border-blue-500" : "border-transparent"
+                    selectedPerson === person ? "border-purple-500" : "border-transparent"
                   }`}
                   onClick={() => {
                     setSelectedPerson(person);
@@ -121,7 +132,7 @@ export default function Home() {
               />
               <label
                 htmlFor="file-upload"
-                className="cursor-pointer rounded-lg bg-blue-500 px-8 py-4 text-white hover:bg-blue-600"
+                className="cursor-pointer rounded-lg bg-purple-600 px-8 py-4 text-white hover:bg-purple-700"
               >
                 Upload Image
               </label>
@@ -143,23 +154,28 @@ export default function Home() {
         <div className="mt-8">
           <button
             onClick={handleGenerate}
-            className="rounded-lg bg-blue-500 px-8 py-4 text-white hover:bg-blue-600 disabled:bg-gray-400"
-            disabled={!selectedCloth || (!selectedPerson && !uploadedImage)}
+            className="rounded-lg bg-purple-600 px-8 py-4 text-white hover:bg-purple-700 disabled:bg-gray-400"
+            disabled={selectedClothes.length === 0 || (!selectedPerson && !uploadedImage)}
           >
             Generate Image
           </button>
         </div>
 
-        {generatedImage && (
+        {generatedImages.length > 0 && (
           <div className="mt-8">
-            <h2 className="mb-4 text-2xl font-semibold">Generated Image</h2>
-            <Image
-              src={`data:${generatedImage.mimeType};base64,${generatedImage.data}`}
-              alt="Generated Image"
-              width={400}
-              height={400}
-              className="rounded-lg"
-            />
+            <h2 className="mb-4 text-2xl font-semibold">Generated Images</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {generatedImages.map((image, index) => (
+                <Image
+                  key={index}
+                  src={`data:${image.mimeType};base64,${image.data}`}
+                  alt={`Generated Image ${index + 1}`}
+                  width={400}
+                  height={400}
+                  className="rounded-lg"
+                />
+              ))}
+            </div>
           </div>
         )}
       </main>
