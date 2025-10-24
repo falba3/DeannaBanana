@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
 
       fileToGenerativePart(cloth, "image/jpeg"),
       
-      { text: "Composite the first image's person to be wearing the second image's provided clothing item. Keep the first person's identity, facial features, body proportions, and lighting consistent. Keep the provided clothing item's style, length of sleeves, and color.  Produce a photorealistic image." },
+      { text: "Composite the first image's person to be wearing the second image's provided clothing item. Keep the first person's identity, facial features, body proportions, and lighting consistent. Make sure to keep the clothing piece's style and fit it to the new person well.  Produce a photorealistic image." },
 
     ];
 

@@ -8,7 +8,6 @@ const people = ["person1.jpg", "person2.jpg", "person3.jpg"];
 export default function Home() {
   const [clothes, setClothes] = useState<string[]>([]);
   const [selectedClothes, setSelectedClothes] = useState<string[]>([]);
-  const [generatedImages, setGeneratedImages] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchClothes = async () => {
@@ -20,6 +19,7 @@ export default function Home() {
   }, []);
   const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [generatedImages, setGeneratedImages] = useState<any[]>([]);
 
   const handleClothClick = (cloth: string) => {
     setSelectedClothes((prevSelected) =>
@@ -69,6 +69,21 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-purple-100">
+      {/* Header */}
+      <header className="w-full bg-purple-600 py-6 shadow-md">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <Image
+            src="/bvmprs-logo.svg"
+            alt="BVMPRS BRAND"
+            width={200}
+            height={40}
+            className="object-contain"
+            priority
+          />
+          <div className="text-white text-lg font-semibold">Deanna2u</div>
+        </div>
+      </header>
+
       <main className="container mx-auto flex flex-col items-center justify-center p-4">
         <h1 className="mb-8 text-4xl font-bold">Virtual Try-On</h1>
 
