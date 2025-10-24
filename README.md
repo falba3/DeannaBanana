@@ -48,3 +48,6 @@ You can add more clothing and people images to the application.
 *   **People images:** Add your people images to the `public/people` directory.
 
 After adding the images, you will need to update the `clothes` and `people` arrays in the `src/app/page.tsx` file to include the new file names.
+
+# Deployments
+- October 24, 2025 - 1:23PM
