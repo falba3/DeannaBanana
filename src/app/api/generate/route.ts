@@ -92,13 +92,15 @@ export async function POST(req: NextRequest) {
 
 
 
+    const improvedPrompt = "Composite the first image's person to be wearing the second image's provided clothing item. Crucially, remove any existing clothing from the person's body before compositing, so that ONLY the new clothing item is visible. Keep the first person's identity, facial features, body proportions, and lighting consistent. Make sure to keep the clothing piece's style and fit it to the new person well. Produce a photorealistic image.";
     const parts = [
 
       fileToGenerativePart(person, "image/jpeg"),
 
       fileToGenerativePart(cloth, "image/jpeg"),
       
-      { text: "Composite the first image's person to be wearing the second image's provided clothing item. Keep the first person's identity, facial features, body proportions, and lighting consistent. Make sure to keep the clothing piece's style and fit it to the new person well.  Produce a photorealistic image." },
+      
+      { text: improvedPrompt },
 
     ];
 

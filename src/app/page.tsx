@@ -68,9 +68,9 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-purple-100">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-purple-200">
       {/* Header */}
-      <header className="w-full bg-purple-600 py-6 shadow-md">
+      <header className="w-full bg-purple-200 py-6 shadow-xl">
         <div className="container mx-auto px-4 flex justify-between items-center">
           <Image
             src="/bvmprs-logo.svg"
@@ -80,25 +80,24 @@ export default function Home() {
             className="object-contain"
             priority
           />
-          <div className="text-white text-lg font-semibold">Deanna2u</div>
+          <div className="text-purple-700 text-lg font-semibold">Deanna2u</div>
         </div>
       </header>
 
       <main className="container mx-auto flex flex-col items-center justify-center p-4">
-        <h1 className="mb-8 text-4xl font-bold">Virtual Try-On</h1>
+        <h1 className="mb-8 text-5xl font-semibold tracking-wide text-purple-800">Virtual Try-On</h1>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div className="flex flex-col items-center">
-            <h2 className="mb-4 text-2xl font-semibold">1. Choose a Clothing Item</h2>
+          <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-lg">
+            <h2 className="mb-6 text-2xl font-medium text-purple-700">Choose a Clothing Item</h2>
             <div className="h-96 w-full overflow-y-auto rounded-lg border-4 border-purple-300 p-4">
               <div className="grid grid-cols-2 gap-4">
                 {clothes.map((cloth) => (
                   <div
                     key={cloth}
-                    className={`cursor-pointer rounded-lg border-4 ${
-                      selectedClothes.includes(cloth) ? "border-purple-500" : "border-transparent"
-                    }`}
-                    onClick={() => handleClothClick(cloth)}
+                    className={`cursor-pointer rounded-lg transition-all duration-300 hover:scale-105 ${
+                      selectedClothes.includes(cloth) ? "ring-2 ring-purple-500 ring-offset-2" : "border border-gray-200"
+                    }`}                    onClick={() => handleClothClick(cloth)}
                   >
                     <Image
                       src={`/clothes/${cloth}`}
@@ -113,16 +112,15 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col items-center">
-            <h2 className="mb-4 text-2xl font-semibold">2. Choose a Person or Upload</h2>
+          <div className="flex flex-col items-center bg-white p-8 rounded-xl shadow-lg">
+            <h2 className="mb-6 text-2xl font-medium text-purple-700">Choose a Person or Upload</h2>
             <div className="grid grid-cols-3 gap-4">
               {people.map((person) => (
                 <div
                   key={person}
-                  className={`cursor-pointer rounded-lg border-4 ${
-                    selectedPerson === person ? "border-purple-500" : "border-transparent"
-                  }`}
-                  onClick={() => {
+                  className={`cursor-pointer rounded-lg transition-all duration-300 hover:scale-105 ${
+                    selectedPerson === person ? "ring-2 ring-purple-500 ring-offset-2" : "border border-gray-200"
+                  }`}                  onClick={() => {
                     setSelectedPerson(person);
                     setUploadedImage(null);
                   }}
@@ -147,7 +145,7 @@ export default function Home() {
               />
               <label
                 htmlFor="file-upload"
-                className="cursor-pointer rounded-lg bg-purple-600 px-8 py-4 text-white hover:bg-purple-700"
+                className="cursor-pointer rounded-lg bg-purple-600 px-6 py-3 text-white hover:bg-purple-700 shadow-md"
               >
                 Upload Image
               </label>
@@ -169,7 +167,7 @@ export default function Home() {
         <div className="mt-8">
           <button
             onClick={handleGenerate}
-            className="rounded-lg bg-purple-600 px-8 py-4 text-white hover:bg-purple-700 disabled:bg-gray-400"
+            className="rounded-lg bg-purple-600 px-6 py-3 text-white hover:bg-purple-700 disabled:bg-purple-400 shadow-md"
             disabled={selectedClothes.length === 0 || (!selectedPerson && !uploadedImage)}
           >
             Generate Image
