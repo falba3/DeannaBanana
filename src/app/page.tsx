@@ -3,6 +3,11 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
+interface GeneratedImagePart {
+  data: string;
+  mimeType: string;
+}
+
 export default function Home() {
   const [people, setPeople] = useState<string[]>([]);
 
@@ -34,7 +39,7 @@ export default function Home() {
 
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
-  const [generatedImages, setGeneratedImages] = useState<any[]>([]);
+  const [generatedImages, setGeneratedImages] = useState<GeneratedImagePart[]>([]);
 
 
 
