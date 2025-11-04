@@ -74,8 +74,12 @@ export class MySQLConnector {
                 database: this.database,
             });
             console.log('Connected to the database successfully!');
-        } catch (err: any) {
-            console.error(`Error connecting to the database: ${err.message}`);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error(`Error connecting to the database: ${err.message}`);
+            } else {
+                console.error(`An unknown error occurred while connecting to the database: ${err}`);
+            }
             this.connection = null;
         }
     }
@@ -103,8 +107,12 @@ export class MySQLConnector {
                 const okPacket = rows as mysql.OkPacket;
                 return okPacket.affectedRows as T;
             }
-        } catch (err: any) {
-            console.error(`Error executing query: ${err.message}`);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error(`Error executing query: ${err.message}`);
+            } else {
+                console.error(`An unknown error occurred while executing query: ${err}`);
+            }
             return null;
         }
     }
@@ -130,8 +138,12 @@ export class MySQLConnector {
             const okPacket = result as mysql.OkPacket;
             console.log(`Book record inserted successfully with ID: ${okPacket.insertId}`);
             return okPacket.insertId;
-        } catch (err: any) {
-            console.error(`Error creating book: ${err.message}`);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error(`Error creating book: ${err.message}`);
+            } else {
+                console.error(`An unknown error occurred while creating book: ${err}`);
+            }
             return null;
         }
     }
@@ -154,8 +166,12 @@ export class MySQLConnector {
             const okPacket = result as mysql.OkPacket;
             console.log(`Clipping record inserted successfully with ID: ${okPacket.insertId}`);
             return okPacket.insertId;
-        } catch (err: any) {
-            console.error(`Error creating clipping: ${err.message}`);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error(`Error creating clipping: ${err.message}`);
+            } else {
+                console.error(`An unknown error occurred while creating clipping: ${err}`);
+            }
             return null;
         }
     }
@@ -175,8 +191,12 @@ export class MySQLConnector {
                 console.log(`Found existing book with ID: ${existingBook[0].id}`);
                 return existingBook[0].id;
             }
-        } catch (err: any) {
-            console.error(`Error finding book: ${err.message}`);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error(`Error finding book: ${err.message}`);
+            } else {
+                console.error(`An unknown error occurred while finding book: ${err}`);
+            }
             // Continue to create if finding fails
         }
 
@@ -241,8 +261,12 @@ export class MySQLConnector {
                 console.warn(`Book with ID ${bookId} not found, numClips not updated.`);
                 return false;
             }
-        } catch (err: any) {
-            console.error(`Error incrementing numClips for book ID ${bookId}: ${err.message}`);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error(`Error incrementing numClips for book ID ${bookId}: ${err.message}`);
+            } else {
+                console.error(`An unknown error occurred while incrementing numClips for book ID ${bookId}: ${err}`);
+            }
             return false;
         }
     }
