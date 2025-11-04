@@ -74,7 +74,7 @@ export class MySQLConnector {
                 database: this.database,
             });
             console.log('Connected to the database successfully!');
-        } catch (err: Error) {
+        } catch (err: any) {
             console.error(`Error connecting to the database: ${err.message}`);
             this.connection = null;
         }
@@ -103,7 +103,7 @@ export class MySQLConnector {
                 const okPacket = rows as mysql.OkPacket;
                 return okPacket.affectedRows as T;
             }
-        } catch (err: Error) {
+        } catch (err: any) {
             console.error(`Error executing query: ${err.message}`);
             return null;
         }
@@ -130,7 +130,7 @@ export class MySQLConnector {
             const okPacket = result as mysql.OkPacket;
             console.log(`Book record inserted successfully with ID: ${okPacket.insertId}`);
             return okPacket.insertId;
-        } catch (err: Error) {
+        } catch (err: any) {
             console.error(`Error creating book: ${err.message}`);
             return null;
         }
@@ -154,7 +154,7 @@ export class MySQLConnector {
             const okPacket = result as mysql.OkPacket;
             console.log(`Clipping record inserted successfully with ID: ${okPacket.insertId}`);
             return okPacket.insertId;
-        } catch (err: Error) {
+        } catch (err: any) {
             console.error(`Error creating clipping: ${err.message}`);
             return null;
         }
@@ -175,7 +175,7 @@ export class MySQLConnector {
                 console.log(`Found existing book with ID: ${existingBook[0].id}`);
                 return existingBook[0].id;
             }
-        } catch (err: Error) {
+        } catch (err: any) {
             console.error(`Error finding book: ${err.message}`);
             // Continue to create if finding fails
         }
@@ -241,7 +241,7 @@ export class MySQLConnector {
                 console.warn(`Book with ID ${bookId} not found, numClips not updated.`);
                 return false;
             }
-        } catch (err: Error) {
+        } catch (err: any) {
             console.error(`Error incrementing numClips for book ID ${bookId}: ${err.message}`);
             return false;
         }
