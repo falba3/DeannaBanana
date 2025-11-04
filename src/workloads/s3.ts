@@ -1,21 +1,21 @@
 import { Bucket } from "@monolayer/sdk";
 
-const BananaBucket = new Bucket("bananabucketdev", { region: process.env.AWS_REGION });
+const BananaBucket = new Bucket("bananabucketdev");
 
 export default BananaBucket;
 
 // Client configuration
 
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, ObjectCannedACL } from "@aws-sdk/client-s3";
 
 export const s3Client = new S3Client({
     region: process.env.AWS_REGION, // Explicitly set the region
     credentials: process.env.ML_BUCKET_ENDPOINT ? {
-        accessKeyId: process.env.ML_ACCESS_KEY_ID || 'minioadmin',
-        secretAccessKey: process.env.ML_SECRET_ACCESS_KEY || 'minioadmin',
+        accessKeyId: process.env.ML_ACCESS_KEY_ID as string || 'minioadmin',
+        secretAccessKey: process.env.ML_SECRET_ACCESS_KEY as string || 'minioadmin',
     } : {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID as string || '',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string || '',
     },
     endpoint: process.env.ML_BUCKET_ENDPOINT || undefined, // Use local endpoint if available
     forcePathStyle: !!process.env.ML_BUCKET_ENDPOINT, // Required for MinIO/LocalStack
@@ -24,6 +24,9 @@ export const s3Client = new S3Client({
 // Function to upload image to S3
 export async function uploadImageToS3(key: string, body: Buffer, contentType: string): Promise<string> {
   const region = await s3Client.config.region(); // Get region from client config
+  if (!region) {
+    throw new Error("AWS region is not defined in S3Client configuration.");
+  }
   const bucketName = BananaBucket.name;
 
   const uploadParams = {
@@ -31,7 +34,7 @@ export async function uploadImageToS3(key: string, body: Buffer, contentType: st
     Key: key,
     Body: body,
     ContentType: contentType,
-    ACL: 'public-read', // Make the object publicly readable
+    ACL: 'public-read' as ObjectCannedACL, // Make the object publicly readable
   };
 
   try {
