@@ -2,13 +2,11 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/ge
 
 import { NextRequest, NextResponse } from "next/server";
 import { MySQLConnector, ClippingData } from "@/lib/mysql";
-import { uploadImageToS3 } from "@/workloads/s3";
 
 import fs from "fs";
 
 import path from "path";
-
-
+import { uploadImageToS3 } from "@/lib/upload-image";
 
 const MODEL_NAME = "models/gemini-2.5-flash-image";
 
