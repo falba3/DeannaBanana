@@ -24,7 +24,7 @@ export async function uploadImageToS3(
 
   try {
     await s3Client.send(new PutObjectCommand(uploadParams));
-    const publicUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${key}`;
+    const publicUrl = `https://${bucketName}.s3.us-east-1.amazonaws.com/${key}`;
     console.log(`Image uploaded to S3: ${publicUrl}`);
     return publicUrl;
   } catch (error: unknown) {
