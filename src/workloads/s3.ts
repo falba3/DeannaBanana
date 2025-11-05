@@ -1,6 +1,6 @@
 import { Bucket } from "@monolayer/sdk";
 
-const BananaBucket = new Bucket("bananabucketdev");
+const BananaBucket = new Bucket("snaps2u");
 
 export default BananaBucket;
 
