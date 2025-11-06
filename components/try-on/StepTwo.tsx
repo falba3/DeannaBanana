@@ -82,7 +82,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
         throw new Error(errorData.error || "Failed to create book");
       }
 
-      const { bookId: newBookId } = await createBookResponse.json();
+      const { bookId: newBookId, bookSlug } = await createBookResponse.json();
       setBookId(newBookId);
 
       const allGeneratedResults: any[] = [];
@@ -125,7 +125,16 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
       }
 
       onGenerate(allGeneratedResults);
-      toast.success("Virtual try-on complete!", { id: "generating" });
+      const bookUrl = `https://www.deanna2u.com/men_s_fashion/${bookSlug}`;
+      toast.success(
+        <div className="flex flex-col">
+          <span>Here's a ministore with your generated photos!</span>
+          <a href={bookUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+            {bookUrl}
+          </a>
+        </div>,
+        { id: "generating", duration: 10000 }
+      );
     } catch (error: any) {
       console.error("Generation error:", error);
       toast.error(error.message || "Failed to generate virtual try-on.", { id: "generating" });

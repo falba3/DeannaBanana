@@ -60,7 +60,8 @@ export async function POST(req: NextRequest) {
     await db.disconnect();
 
     if (bookId) {
-      return NextResponse.json({ bookId }, { status: 200 });
+      const bookSlug = newBookData.slug; // Get the generated slug
+      return NextResponse.json({ bookId, bookSlug }, { status: 200 });
     } else {
       return NextResponse.json(
         { error: "Failed to create book" },
