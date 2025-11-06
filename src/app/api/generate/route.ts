@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
       const imageDataBuffer = Buffer.from(generatedImage.inlineData.data, 'base64');
       const filename = `try-on-${Date.now()}-${Math.random().toString(36).substring(7)}.${generatedImage.inlineData.mimeType.split('/')[1]}`;
       try {
-        publicS3Url = await uploadImageToS3(`clippings/${filename}`, imageDataBuffer, generatedImage.inlineData.mimeType);
+        publicS3Url = await uploadImageToS3(`generated_images/clippings/${filename}`, imageDataBuffer, generatedImage.inlineData.mimeType);
       } catch (s3Error) {
         console.error("Failed to upload image to S3:", s3Error);
         // Continue without S3 URL if upload fails
