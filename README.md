@@ -1,54 +1,73 @@
-# Virtual Try-On
+# Welcome to your Lovable project
 
-This is a Next.js application that allows you to virtually try on clothes.
+## Project info
 
-## Getting Started
+**URL**: https://lovable.dev/projects/0b478506-0f5c-48ae-bf9a-95c813651458
 
-To get started, you will need to have Node.js and npm installed.
+## How can I edit this code?
 
-1.  **Clone the repository:**
+There are several ways of editing your application.
 
-    ```bash
-    git clone https://github.com/DeannaBanana/DeannaBanana.git
-    ```
+**Use Lovable**
 
-2.  **Install the dependencies:**
+Simply visit the [Lovable Project](https://lovable.dev/projects/0b478506-0f5c-48ae-bf9a-95c813651458) and start prompting.
 
-    ```bash
-    npm install
-    ```
+Changes made via Lovable will be committed automatically to this repo.
 
-3.  **Set up your environment variables:**
+**Use your preferred IDE**
 
-    Create a `.env.local` file in the root of the project and add your Gemini API key:
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-    ```
-    GEMINI_API_KEY=YOUR_API_KEY
-    ```
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-4.  **Run the development server:**
+Follow these steps:
 
-    ```bash
-    npm run dev
-    ```
+```sh
+# Step 1: Clone the repository using the project's Git URL.
+git clone <YOUR_GIT_URL>
 
-    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
 
-## How to use
+# Step 3: Install the necessary dependencies.
+npm i
 
-1.  Choose a clothing item from the left panel.
-2.  Choose a person from the right panel or upload your own photo.
-3.  Click the "Generate Image" button to see the result.
+# Step 4: Start the development server with auto-reloading and an instant preview.
+npm run dev
+```
 
-## Adding more images
+**Edit a file directly in GitHub**
 
-You can add more clothing and people images to the application.
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
 
-*   **Clothing images:** Add your clothing images to the `public/clothes` directory.
-*   **People images:** Add your people images to the `public/people` directory.
+**Use GitHub Codespaces**
 
-After adding the images, you will need to update the `clothes` and `people` arrays in the `src/app/page.tsx` file to include the new file names.
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
 
-# Deployments
-- October 24, 2025 - 1:23PM - Failed
-- October 24, 2025 - 1:25PM - 
+## What technologies are used for this project?
+
+This project is built with:
+
+- Next.js
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+
+## How can I deploy this project?
+
+Simply open [Lovable](https://lovable.dev/projects/0b478506-0f5c-48ae-bf9a-95c813651458) and click on Share -> Publish.
+
+## Can I connect a custom domain to my Lovable project?
+
+Yes, you can!
+
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
