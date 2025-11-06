@@ -19,7 +19,7 @@ export async function uploadImageToS3(
     Key: key,
     Body: body,
     ContentType: contentType,
-    ACL: "public-read" as ObjectCannedACL, // Make the object publicly readable
+
   };
 
   try {
