@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
     const generationConfig = {
-      temperature: 0.4,
+      temperature: 0.3,
       topK: 32,
       topP: 1,
       maxOutputTokens: 4096,
