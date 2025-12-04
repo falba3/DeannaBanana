@@ -27,6 +27,7 @@ const VirtualTryOn = ({ clothingImages, peopleImages }: VirtualTryOnProps) => {
   const [selectedClothing, setSelectedClothing] = useState<string[]>([]);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [generatedResults, setGeneratedResults] = useState<any[]>([]);
+  const [bookId, setBookId] = useState<number | null>(null); // New state for bookId
 
   // Create clothing items with dummy data for now
   const clothingItems: ClothingItem[] = clothingImages.map((imageName, index) => ({
@@ -143,6 +144,7 @@ const VirtualTryOn = ({ clothingImages, peopleImages }: VirtualTryOnProps) => {
             onImageUpload={setUploadedImage}
             selectedClothing={selectedClothing}
             onGenerate={handleGenerate}
+            onBookCreate={setBookId} // Pass setBookId to StepTwo
           />
         )}
         {currentStep === 3 && (
@@ -150,6 +152,7 @@ const VirtualTryOn = ({ clothingImages, peopleImages }: VirtualTryOnProps) => {
             results={generatedResults}
             selectedClothing={selectedClothing}
             uploadedImage={uploadedImage}
+            bookId={bookId} // Pass bookId to StepThree
           />
         )}
       </main>

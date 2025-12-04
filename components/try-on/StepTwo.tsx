@@ -18,12 +18,14 @@ interface StepTwoProps {
   onImageUpload: (image: string) => void;
   selectedClothing: string[];
   onGenerate: (results: any[]) => void;
+  onBookCreate: (bookId: number) => void; // New prop for bookId setter
 }
 
-const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, selectedClothing, onGenerate }: StepTwoProps) => {
+const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, selectedClothing, onGenerate, onBookCreate }: StepTwoProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [dragActive, setDragActive] = useState(false);
-  const [bookId, setBookId] = useState<number | null>(null);
+  // Removed local bookId state as it's now managed by the parent
+  // const [bookId, setBookId] = useState<number | null>(null);
 
   const handleFileUpload = (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -83,7 +85,8 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
       }
 
       const { bookId: newBookId, bookSlug } = await createBookResponse.json();
-      setBookId(newBookId);
+      onBookCreate(newBookId); // Call the prop to update bookId in parent
+
 
       const allGeneratedResults: any[] = [];
 
