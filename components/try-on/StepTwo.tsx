@@ -136,7 +136,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
             {bookUrl}
           </a>
         </div>,
-        { id: "generating", duration: 10000 }
+        { id: "generating", duration: 60000 } // Set duration to 1 minute
       );
     } catch (error: any) {
       console.error("Generation error:", error);

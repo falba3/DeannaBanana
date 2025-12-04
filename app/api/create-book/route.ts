@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       category_id: 19, // Men's Fashion from frank.py
       modified: formattedDate,
       addEnd: 1,
-      coverImage: "https://www.gstatic.com/lamda/images/gemini_aurora_thumbnail_4g_e74822ff0ca4259beb718.png", // Placeholder
+      coverImage: "", // Placeholder
       sharing: 0,
       coverColor: 2,
       dollarsGiven: 0,
@@ -45,12 +45,12 @@ export async function POST(req: NextRequest) {
       numLikers: 0,
       description: bookDescription,
       tags: "",
-      thumbnailImage: "https://www.gstatic.com/lamda/images/gemini_aurora_thumbnail_4g_e74822ff0ca4259beb718.png", // Placeholder
+      thumbnailImage: "", // Placeholder
       numClips: 0,
       numViews: 0,
       userLanguage: "es-ES",
       embed_code: null,
-      thumbnailImageSmall: "https://www.gstatic.com/lamda/images/gemini_aurora_thumbnail_4g_e74822ff0ca4259beb718.png", // Placeholder
+      thumbnailImageSmall: "", // Placeholder
       humanModified: formattedDate,
       coverV3: 1,
       typeFilters: "a:0:{}"

@@ -4,6 +4,28 @@ import { toast } from "sonner";
 import { useRouter } from "next/router"; 
 import { useState } from "react";
 import Image from "next/image"; // Import Next.js Image component for optimization
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog"; // Import Dialog components
+
+// Define SCENES array (copy from app/api/generate-situations/route.ts)
+const SCENES = [
+  {
+    id: "subway",
+    title: "Subway sprint",
+  },
+  {
+    id: "cafe",
+    title: "Coffee break",
+  },
+  {
+    id: "gym",
+    title: "Gym floor",
+  },
+];
 
 interface SituationImage {
   id: string;
@@ -29,6 +51,10 @@ interface StepThreeProps {
 const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThreeProps) => {
   const router = useRouter();
   const [tryOnResults, setTryOnResults] = useState<Result[]>(results); // Use local state to manage results
+
+  const [isZoomDialogOpen, setIsZoomDialogOpen] = useState(false);
+  const [zoomImageUrl, setZoomImageUrl] = useState('');
+  const [zoomImageTitle, setZoomImageTitle] = useState('');
 
   const handleDownload = (imageUrl: string, id: string) => {
     const link = document.createElement("a");
@@ -71,47 +97,68 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThr
 
     setTryOnResults(prevResults =>
       prevResults.map(res =>
-        res.id === resultId ? { ...res, isGeneratingSituations: true } : res
+        res.id === resultId ? { ...res, isGeneratingSituations: true, generatedSituations: [] } : res // Reset situations and set loading
       )
     );
-    toast.loading("Generating situations...", { id: `situations-${resultId}` });
+    toast.loading("Starting situation generation...", { id: `situations-main-${resultId}` });
 
-    try {
-      const response = await fetch('/api/generate-situations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            baseImage,
-            book_id: bookId, // Pass bookId
-            clothing_id: resultId, // Pass the ID of the try-on result as clothing_id
-        }),
-      });
+    // Iterate through SCENES and make individual API calls
+    for (const scene of SCENES) {
+        toast.loading(`Generating ${scene.title}...`, { id: `situation-${resultId}-${scene.id}` });
+        try {
+            const response = await fetch('/api/generate-situations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    baseImage,
+                    book_id: bookId,
+                    clothing_id: resultId,
+                    sceneId: scene.id, // Pass the specific scene ID
+                }),
+            });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to generate situations");
-      }
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Failed to generate ${scene.title}`);
+            }
 
-      const data = await response.json();
-      setTryOnResults(prevResults =>
-        prevResults.map(res =>
-          res.id === resultId
-            ? { ...res, generatedSituations: data.images, isGeneratingSituations: false }
-            : res
-        )
-      );
-      toast.success("Situations generated successfully!", { id: `situations-${resultId}` });
-    } catch (error: any) {
-      console.error("Error generating situations:", error);
-      toast.error(error.message || "Failed to generate situations.", { id: `situations-${resultId}` });
-      setTryOnResults(prevResults =>
-        prevResults.map(res =>
-          res.id === resultId ? { ...res, isGeneratingSituations: false } : res
-        )
-      );
+            const data = await response.json();
+            const newSituationImage: SituationImage = data.image; // API now returns a single image
+
+            // Update state incrementally for each generated situation
+            setTryOnResults(prevResults =>
+                prevResults.map(res =>
+                    res.id === resultId
+                        ? {
+                              ...res,
+                              generatedSituations: [...(res.generatedSituations || []), newSituationImage],
+                          }
+                        : res
+                )
+            );
+            toast.success(`${scene.title} generated!`, { id: `situation-${resultId}-${scene.id}` });
+
+        } catch (error: any) {
+            console.error(`Error generating ${scene.title}:`, error);
+            toast.error(error.message || `Failed to generate ${scene.title}.`, { id: `situation-${resultId}-${scene.id}` });
+        }
     }
+
+    // After loop, set isGeneratingSituations to false
+    setTryOnResults(prevResults =>
+        prevResults.map(res =>
+            res.id === resultId ? { ...res, isGeneratingSituations: false } : res
+        )
+    );
+    toast.success("All situations generated!", { id: `situations-main-${resultId}` });
+  };
+
+  const handleImageClick = (imageUrl: string, title: string) => {
+    setZoomImageUrl(imageUrl);
+    setZoomImageTitle(title);
+    setIsZoomDialogOpen(true);
   };
 
   return (
@@ -188,7 +235,11 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThr
                   <h4 className="font-medium text-md mb-2">In Different Scenes:</h4>
                   <div className="grid grid-cols-3 gap-2">
                     {result.generatedSituations.map(situation => (
-                      <div key={situation.id} className="relative aspect-square rounded-md overflow-hidden bg-muted">
+                      <button // Changed div to button for clickability
+                        key={situation.id}
+                        onClick={() => handleImageClick(situation.s3Url, situation.title)}
+                        className="relative aspect-square rounded-md overflow-hidden bg-muted cursor-pointer"
+                      >
                         <Image
                           src={situation.s3Url}
                           alt={situation.title}
@@ -200,7 +251,7 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThr
                         <span className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs text-center py-1">
                           {situation.title}
                         </span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -220,6 +271,27 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThr
           Shop Collection
         </Button>
       </div>
+
+      {/* Zoom Dialog */}
+      <Dialog open={isZoomDialogOpen} onOpenChange={setIsZoomDialogOpen}>
+        <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden">
+          <DialogHeader className="p-4 pb-0">
+            <DialogTitle>{zoomImageTitle}</DialogTitle>
+          </DialogHeader>
+          <div className="relative w-full aspect-square md:aspect-video">
+            {zoomImageUrl && (
+              <Image
+                src={zoomImageUrl}
+                alt={zoomImageTitle}
+                fill
+                style={{ objectFit: "contain" }}
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="p-4"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
