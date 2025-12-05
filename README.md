@@ -73,6 +73,8 @@ To connect a domain, navigate to Project > Settings > Domains and click Connect 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
 
 # New Deploys
+
 - Dec 4, 21:25
 - Dec 5, 11:30
 - Dec 5, 11:59
+- Dec 5, 12:54
