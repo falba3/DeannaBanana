@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["franco-alba-bucket.s3.eu-north-1.amazonaws.com"],
+    domains: ["deanna-banana-main-bananabucketdev.s3.us-east-1.amazonaws.com"],
   },
 };
 
