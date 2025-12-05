@@ -1,5 +1,6 @@
 import { PutObjectCommand, type ObjectCannedACL } from "@aws-sdk/client-s3";
 import { s3Client } from "./s3-client";
+import BananaBucket from "@/workloads/s3";
 
 // Function to upload image to S3
 export async function uploadImageToS3(
@@ -11,18 +12,14 @@ export async function uploadImageToS3(
   if (!region) {
     throw new Error("AWS region is not defined in S3Client configuration.");
   }
-  
-  const bucketName = process.env.AWS_BUCKET_NAME; // Get bucket name from environment variable
-  if (!bucketName) {
-    throw new Error("AWS_BUCKET_NAME environment variable is not set.");
-  }
+
+  const bucketName = BananaBucket.name;
 
   const uploadParams = {
     Bucket: bucketName,
     Key: key,
     Body: body,
     ContentType: contentType,
-    ACL: 'public-read' as ObjectCannedACL // Make the uploaded object publicly readable
   };
 
   try {
