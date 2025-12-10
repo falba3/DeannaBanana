@@ -1,23 +1,24 @@
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
 import { NextRequest, NextResponse } from "next/server";
-import { MySQLConnector, ClippingData } from "../../../lib/mysql"; // Re-add MySQL imports
+import { MySQLConnector, ClippingData } from "../../../lib/mysql";
 
 import fs from "fs";
 
 import path from "path";
-import { uploadImageToS3 } from "../../../lib/upload-image"; // Re-add S3 upload import
+import { uploadImageToS3 } from "../../../lib/upload-image";
 
 const MODEL_NAME = "models/gemini-2.5-flash-image";
 
 const API_KEY = process.env.GEMINI_API_KEY as string;
 
-
-
 // Function to convert file to generative part
-
 function fileToGenerativePart(filePath: string, mimeType: string) {
   const fullPath = path.join(process.cwd(), "public", filePath);
+  // Ensure the file exists before trying to read it
+  if (!fs.existsSync(fullPath)) {
+    throw new Error(`Local file not found: ${fullPath}`);
+  }
   return {
     inlineData: {
       data: Buffer.from(fs.readFileSync(fullPath)).toString("base64"),
@@ -41,6 +42,26 @@ function dataUrlToGenerativePart(dataUrl: string) {
   };
 }
 
+async function fetchImageAsGenerativePart(imageUrl: string): Promise<any> {
+  const response = await fetch(imageUrl);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch image from URL: ${imageUrl}, status: ${response.status}`);
+  }
+  const contentType = response.headers.get("Content-Type");
+  if (!contentType || !contentType.startsWith("image/")) {
+    throw new Error(`Fetched URL does not provide an image: ${imageUrl}, Content-Type: ${contentType}`);
+  }
+  const arrayBuffer = await response.arrayBuffer();
+  const base64Data = Buffer.from(arrayBuffer).toString("base64");
+  return {
+    inlineData: {
+      data: base64Data,
+      mimeType: contentType,
+    },
+  };
+}
+
+
 export async function POST(req: NextRequest) {
   const { cloth, person, book_id } = await req.json();
 
@@ -52,6 +73,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    if (!API_KEY) {
+      console.error("GEMINI_API_KEY is not set.");
+      return NextResponse.json(
+        { error: "Server configuration error: GEMINI_API_KEY is missing." },
+        { status: 500 }
+      );
+    }
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
@@ -71,13 +99,43 @@ export async function POST(req: NextRequest) {
 
     const improvedPrompt = "Carefully composite the clothing item from the 'clothing image' onto the person from the 'person image'. Crucially, completely remove any existing clothing from the person's body before compositing, so that ONLY the new clothing item is visible. Maintain the person's original identity, facial features, body proportions, and lighting. Ensure the new clothing piece's style is preserved and that it fits realistically, adapting naturally to the person's body shape and pose. Produce a high-quality, photorealistic image.";
 
-    const personPart = person.startsWith("data:")
-      ? dataUrlToGenerativePart(person)
-      : fileToGenerativePart(person, "image/jpeg");
+    let personPart;
+    try {
+      if (person.startsWith("data:")) {
+        personPart = dataUrlToGenerativePart(person);
+      } else if (person.startsWith("http://") || person.startsWith("https://")) {
+        personPart = await fetchImageAsGenerativePart(person);
+      } else {
+        personPart = fileToGenerativePart(person, "image/jpeg"); // Default mime type for local files
+      }
+    } catch (error) {
+      console.error("Error processing person image:", error);
+      return NextResponse.json(
+        { error: `Invalid person image data or URL provided: ${(error as Error).message}` },
+        { status: 400 }
+      );
+    }
 
+    let clothPart;
+    try {
+      if (cloth.startsWith("data:")) {
+        clothPart = dataUrlToGenerativePart(cloth);
+      } else if (cloth.startsWith("http://") || cloth.startsWith("https://")) {
+        clothPart = await fetchImageAsGenerativePart(cloth);
+      } else {
+        clothPart = fileToGenerativePart(cloth, "image/jpeg"); // Default mime type for local files
+      }
+    } catch (error) {
+      console.error("Error processing cloth image:", error);
+      return NextResponse.json(
+        { error: `Invalid cloth image data or URL provided: ${(error as Error).message}` },
+        { status: 400 }
+      );
+    }
+    
     const parts = [
       personPart,
-      fileToGenerativePart(cloth, "image/jpeg"),
+      clothPart,
       { text: improvedPrompt },
     ];
 
@@ -88,6 +146,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (!result.response.candidates || result.response.candidates.length === 0) {
+      console.error("Gemini API returned no candidates:", JSON.stringify(result.response, null, 2));
       return NextResponse.json(
         { error: "No candidates returned from the model" },
         { status: 500 }
@@ -120,40 +179,47 @@ export async function POST(req: NextRequest) {
 
     // Database interaction to create a clipping
     const db = new MySQLConnector();
-    await db.connect();
+    try {
+      await db.connect();
 
-    const now = new Date();
-    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' '); // Format to 'YYYY-MM-DD HH:MM:SS'
+      const now = new Date();
+      const formattedDate = now.toISOString().slice(0, 19).replace('T', ' '); // Format to 'YYYY-MM-DD HH:MM:SS'
 
-    const clippingData: ClippingData = {
-      book_id: book_id,
-      caption: `Virtual Try-On: ${person.split('/').pop()} with ${cloth.split('/').pop()}`,
-      text: "Generated by DeannaBanana Virtual Try-On",
-      thumbnail: publicS3Url || "",
-      useThumbnail: 1,
-      type: 1,
-      url: publicS3Url || "",
-      created: formattedDate,
-      num: 1,
-      migratedS3: 0,
-      modified: formattedDate,
-    };
+      const clippingData: ClippingData = {
+        book_id: book_id,
+        caption: `Virtual Try-On: ${person.split('/').pop()} with ${cloth.split('/').pop()}`,
+        text: "Generated by DeannaBanana Virtual Try-On",
+        thumbnail: publicS3Url || "",
+        useThumbnail: 1,
+        type: 1,
+        url: publicS3Url || "",
+        created: formattedDate,
+        num: 1,
+        migratedS3: 0,
+        modified: formattedDate,
+      };
 
-    const newClippingId = await db.createClipping(clippingData);
-    if (newClippingId) {
-      console.log(`Clipping created with ID: ${newClippingId}`);
-      await db.incrementBookNumClips(book_id);
-    } else {
-      console.error("Failed to create clipping.");
+      const newClippingId = await db.createClipping(clippingData);
+      if (newClippingId) {
+        console.log(`Clipping created with ID: ${newClippingId}`);
+        await db.incrementBookNumClips(book_id);
+      } else {
+        console.error("Failed to create clipping: Clipping ID not returned.");
+      }
+    } catch (dbError) {
+      console.error("Database operation failed:", dbError);
+      // Decide if you want to return a 500 here or just log and continue.
+      // For now, it will fall through to the main catch block if not re-thrown.
+    } finally {
+      await db.disconnect();
     }
 
-    await db.disconnect();
 
     return NextResponse.json({ image: generatedImage });
   } catch (error) {
-    console.error(error);
+    console.error("Caught error in /api/generate:", error);
     return NextResponse.json(
-      { error: "Failed to generate image" },
+      { error: "Failed to generate image", details: (error as Error).message },
       { status: 500 }
     );
   }

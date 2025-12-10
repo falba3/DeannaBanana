@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        pre { background-color: #f0f0f0; padding: 10px; border-radius: 5px; white-space: pre-wrap; word-break: break-all; }
+        #status { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Test Your Next.js API</h1>
+    <p>
+        This page will attempt to call your <code>/api/generate</code> endpoint.
+        Please make sure you have rebuilt and redeployed your Next.js app
+        after the CORS changes.
+    </p>
+    <button id="testButton">Test API</button>
+    <div id="status"></div>
+    <h2>Response:</h2>
+    <pre id="responseOutput"></pre>
+
+    <script>
+        document.getElementById('testButton').addEventListener('click', async () => {
+            const statusDiv = document.getElementById('status');
+            const outputPre = document.getElementById('responseOutput');
+            statusDiv.textContent = 'Sending request...';
+            outputPre.textContent = '';
+
+            // Replace with your actual domain
+            const YOUR_DOMAIN = 'virtual-try-on.deannafashion.com'; // e.g., 'www.yourwebsite.com'
+            const API_ENDPOINT = `https://${YOUR_DOMAIN}/api/generate`;
+
+            // Dummy base64 image data for testing
+            // These are very small, transparent 1x1 PNGs to keep the payload small
+            const dummyPersonImage = 'https://media.licdn.com/dms/image/v2/D4D03AQG5VyoISpu6Nw/profile-displayphoto-shrink_800_800/B4DZb.fqaeHEAc-/0/1748026435854?e=1766620800&v=beta&t=dyEAi4tPy7Wmq5aOUSpmepbCa7O2ERZ4edfTRtpGjYU';
+            const dummyClothImage = 'https://img2.miravia.es/g/fb/kf/E2d881313173e41e68f347303317182711.jpg_360x360q75.jpg';
+            const dummyBookId = 13233; // Or any valid number you use
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        person: dummyPersonImage,
+                        cloth: dummyClothImage,
+                        book_id: dummyBookId,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusDiv.textContent = 'API call successful!';
+                    statusDiv.style.color = 'green';
+                    outputPre.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    statusDiv.textContent = `API call failed! Status: ${response.status}`;
+                    statusDiv.style.color = 'red';
+                    outputPre.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                statusDiv.textContent = `Error during fetch: ${error.message}`;
+                statusDiv.style.color = 'red';
+                outputPre.textContent = error.stack;
+                console.error('Fetch error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
