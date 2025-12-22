@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
     const newBookData: BookData = {
       user_id: userId,
       name: bookName,
-      slug: `https://www.deanna2u.com/men_s_fashion/deannabanana-virtual-try-on-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${now.toTimeString().slice(0, 8).replace(/:/g, '')}-${userId}`,
+      slug: `deannabanana-virtual-try-on-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${now.toTimeString().slice(0, 8).replace(/:/g, '')}-${userId}`,
       rendered: 0,
       version: 1,
       category_id: 19,
