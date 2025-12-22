@@ -56,12 +56,12 @@
 
         <div class="form-group">
             <label for="clothImageUrl">Clothing Image URL:</label>
-            <input type="text" id="clothImageUrl" value="https://monolayer-demo-images.s3.us-east-2.amazonaws.com/ELCAPOTE_Americana_Cuadros_Camel.jpeg">
+            <input type="text" id="clothImageUrl" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbONgZSebqLbfLWUVZC7RBTotX8ntBiei6CQ&s">
         </div>
 
         <div class="form-group">
             <label for="personImageUrl">Person Image URL:</label>
-            <input type="text" id="personImageUrl" value="https://monolayer-demo-images.s3.us-east-2.amazonaws.com/person3.jpg">
+            <input type="text" id="personImageUrl" value="https://media.licdn.com/dms/image/v2/D4D03AQG5VyoISpu6Nw/profile-displayphoto-shrink_200_200/B4DZb.fqaeHEAY-/0/1748026435814?e=2147483647&v=beta&t=rRD-dt3Inppr5qUFwUiMt9hWklOpdjTp_i7g4jlpdvs">
         </div>
 
         <div class="form-group">
@@ -85,6 +85,11 @@
         </div>
 
         <button id="sendRequest">Send Orchestrated Try-On Request</button>
+
+        <h2>Request Payload:</h2>
+        <div id="request-payload-container" style="margin-bottom: 20px; padding: 15px; background-color: #e8f0fe; border: 1px solid #c8d9f1; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto;">
+            <p>Payload will appear here...</p>
+        </div>
 
         <h2>API Response:</h2>
         <div id="response-container">
@@ -119,6 +124,12 @@
                 }
             }
 
+            // Display the request payload
+            const requestPayloadContainer = document.getElementById('request-payload-container');
+            const jsonPayload = JSON.stringify(requestBody, null, 2);
+            requestPayloadContainer.textContent = jsonPayload;
+            requestPayloadContainer.style.color = 'black'; // Reset color
+
             const responseContainer = document.getElementById('response-container');
             responseContainer.textContent = 'Sending request...';
 
@@ -128,7 +139,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(requestBody),
+                    body: jsonPayload,
                 });
 
                 const data = await response.json();
