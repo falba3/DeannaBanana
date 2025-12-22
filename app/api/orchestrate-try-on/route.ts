@@ -94,7 +94,7 @@ const SCENES = [
 ];
 
 export const runtime = "nodejs";
-export const maxDuration = 60; // Max duration for Vercel Serverless Function
+export const maxDuration = 90; // Max duration for Vercel Serverless Function
 
 export async function POST(req: NextRequest) {
   let db: MySQLConnector | null = null; // Declare db outside try block for finally access
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
     const newBookData: BookData = {
       user_id: userId,
       name: bookName,
-      slug: `deannabanana-virtual-try-on-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${now.toTimeString().slice(0, 8).replace(/:/g, '')}-${userId}`,
+      slug: `https://www.deanna2u.com/men_s_fashion/deannabanana-virtual-try-on-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${now.toTimeString().slice(0, 8).replace(/:/g, '')}-${userId}`,
       rendered: 0,
       version: 1,
       category_id: 19,
@@ -160,9 +160,7 @@ export async function POST(req: NextRequest) {
     if (!bookId) {
       throw new Error("Failed to create book in database.");
     }
-    const baseUrl = "https://www.deanna2u.com/men_s_fashion/";
-    const bookSlug = `${baseUrl}${newBookData.slug}`;
-    console.log(`Book created with ID: ${bookId}, Slug: ${bookSlug}`);
+    const bookSlug = newBookData.slug
 
     // --- Step 2: Generate Virtual Try-On Image (Adapted from app/api/generate/route.ts) ---
     if (!getApiKey()) {

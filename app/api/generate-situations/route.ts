@@ -32,7 +32,7 @@ const SCENES = [
 ];
 
 export const runtime = "nodejs";
-export const maxDuration = 60; // Max duration for Vercel Serverless Function
+export const maxDuration = 90; // Max duration for Vercel Serverless Function
 
 function getApiKey() {
   const key = process.env.GEMINI_API_KEY ?? process.env.GOOGLE_API_KEY;
