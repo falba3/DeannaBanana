@@ -160,7 +160,8 @@ export async function POST(req: NextRequest) {
     if (!bookId) {
       throw new Error("Failed to create book in database.");
     }
-    const bookSlug = newBookData.slug;
+    const baseUrl = "https://www.deanna2u.com/men_s_fashion/";
+    const bookSlug = `${baseUrl}${newBookData.slug}`;
     console.log(`Book created with ID: ${bookId}, Slug: ${bookSlug}`);
 
     // --- Step 2: Generate Virtual Try-On Image (Adapted from app/api/generate/route.ts) ---

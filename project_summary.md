@@ -56,6 +56,18 @@ These are Next.js API routes handling backend logic.
     *   **Database:** Creates a "clipping" record in MySQL linked to the `book_id` and `clothing_id`, and increments `numClips` for the book.
     *   **Dependencies:** `lib/mysql.ts`, `lib/upload-image.ts`.
 
+*   **`/api/orchestrate-try-on` (POST):**
+    *   **Purpose:** Orchestrates the entire virtual try-on process in a single atomic operation. It combines the functionality of `/api/create-book`, `/api/generate`, and `/api/generate-situations`.
+    *   **Inputs:** `clothImageUrl`, `personImageUrl`, `userId`, `generateSituations`, `situationDescription`, `situationCount`.
+    *   **Flow:**
+        1.  Creates a "book" to act as a session container.
+        2.  Generates a virtual try-on image by compositing the cloth onto the person.
+        3.  Uploads the generated try-on image to S3 and creates a "clipping" record in the database.
+        4.  (Optional) If `generateSituations` is true, it uses the newly generated try-on image as a base to create multiple "situation" images (e.g., person in a cafe, subway).
+        5.  Uploads each situation image to S3 and creates corresponding "clipping" records.
+    *   **Output:** `bookId`, `bookSlug`, `tryOnImageUrl`, `situationImageUrls`.
+    *   **Dependencies:** `lib/mysql.ts`, `lib/upload-image.ts`.
+
 ## 5. Main UI Components (`components/`)
 
 *   **`ClothingGrid.tsx`:** Displays a grid of clothing items for user selection, likely part of the try-on setup. Manages selection state and provides visual feedback.
