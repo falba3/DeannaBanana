@@ -205,7 +205,7 @@ export async function POST(req: NextRequest) {
       if (clothImageUrl.startsWith("data:")) {
         clothPart = dataUrlToGenerativePart(clothImageUrl);
       } else if (clothImageUrl.startsWith("http://") || clothImageUrl.startsWith("https://")) {
-        clothPart = await fetchImageAsGener GenerativePart(clothImageUrl);
+        clothPart = await fetchImageAsGenerativePart(clothImageUrl);
       } else {
         clothPart = fileToGenerativePart(clothImageUrl, "image/jpeg");
       }
