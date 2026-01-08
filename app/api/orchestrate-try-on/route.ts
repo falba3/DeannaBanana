@@ -261,6 +261,8 @@ export async function POST(req: NextRequest) {
     if (newTryOnClippingId) {
       console.log(`Try-on Clipping created with ID: ${newTryOnClippingId}`);
       await db.incrementBookNumClips(bookId);
+      // Update the book's cover and thumbnail images with the first generated try-on image
+      await db.updateBookImages(bookId, tryOnImageUrl); // Add this line
     } else {
       console.error("Failed to create try-on clipping: Clipping ID not returned.");
     }

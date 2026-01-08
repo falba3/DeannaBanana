@@ -270,4 +270,38 @@ export class MySQLConnector {
             return false;
         }
     }
+
+    public async updateBookImages(bookId: number, imageUrl: string): Promise<boolean> {
+        if (!this.connection) {
+            console.error('Not connected to the database. Please connect first.');
+            return false;
+        }
+
+        const updateQuery = `
+            UPDATE cliperest_book
+            SET coverImage = ?, thumbnailImage = ?, thumbnailImageSmall = ?, modified = ?
+            WHERE id = ?
+        `;
+        const now = new Date();
+        const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+
+        try {
+            const [result] = await this.connection.execute(updateQuery, [imageUrl, imageUrl, imageUrl, formattedDate, bookId]);
+            const okPacket = result as mysql.OkPacket;
+            if (okPacket.affectedRows > 0) {
+                console.log(`Book images updated for book ID: ${bookId}`);
+                return true;
+            } else {
+                console.warn(`Book with ID ${bookId} not found, images not updated.`);
+                return false;
+            }
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error(`Error updating book images for book ID ${bookId}: ${err.message}`);
+            } else {
+                console.error(`An unknown error occurred while updating book images for book ID ${bookId}: ${err}`);
+            }
+            return false;
+        }
+    }
 }
