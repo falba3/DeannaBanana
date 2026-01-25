@@ -78,3 +78,4 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/c
 - Dec 5, 11:30
 - Dec 5, 11:59
 - Dec 5, 12:54
+- Jan 25, 16:58 (New API Key GEMINI)
