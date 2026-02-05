@@ -18,5 +18,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
-dsadsa
+export default nextConfig

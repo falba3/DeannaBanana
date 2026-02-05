@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     const parts = [
       personPart,
       clothPart,
@@ -177,11 +177,17 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Database interaction to create a clipping
+    // Database interaction to create a clipping and potentially update book images
     if (book_id) { // Only interact with the database if book_id is provided
       const db = new MySQLConnector();
       try {
         await db.connect();
+
+        // Always update the book's cover/thumbnail images if publicS3Url is available
+        if (publicS3Url) {
+          console.log(`Updating book ${book_id} cover/thumbnail images with generated image.`);
+          await db.updateBookImages(book_id, publicS3Url);
+        }
 
         const now = new Date();
         const formattedDate = now.toISOString().slice(0, 19).replace('T', ' '); // Format to 'YYYY-MM-DD HH:MM:SS'
