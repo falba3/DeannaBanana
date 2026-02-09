@@ -27,6 +27,18 @@ function fileToGenerativePart(filePath: string, mimeType: string) {
   };
 }
 
+function getMimeType(filePath: string): string {
+  const ext = path.extname(filePath).toLowerCase();
+  switch (ext) {
+    case ".webp": return "image/webp";
+    case ".png": return "image/png";
+    case ".gif": return "image/gif";
+    case ".jpg":
+    case ".jpeg": return "image/jpeg";
+    default: return "image/jpeg";
+  }
+}
+
 function dataUrlToGenerativePart(dataUrl: string) {
   const match = dataUrl.match(/^data:(.+);base64,(.+)$/);
   if (!match) {
@@ -106,7 +118,7 @@ export async function POST(req: NextRequest) {
       } else if (person.startsWith("http://") || person.startsWith("https://")) {
         personPart = await fetchImageAsGenerativePart(person);
       } else {
-        personPart = fileToGenerativePart(person, "image/jpeg"); // Default mime type for local files
+        personPart = fileToGenerativePart(person, getMimeType(person));
       }
     } catch (error) {
       console.error("Error processing person image:", error);
@@ -123,7 +135,7 @@ export async function POST(req: NextRequest) {
       } else if (cloth.startsWith("http://") || cloth.startsWith("https://")) {
         clothPart = await fetchImageAsGenerativePart(cloth);
       } else {
-        clothPart = fileToGenerativePart(cloth, "image/jpeg"); // Default mime type for local files
+        clothPart = fileToGenerativePart(cloth, getMimeType(cloth));
       }
     } catch (error) {
       console.error("Error processing cloth image:", error);

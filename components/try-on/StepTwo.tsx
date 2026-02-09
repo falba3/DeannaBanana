@@ -6,8 +6,10 @@ import { toast } from "sonner";
 interface ClothingItem {
   id: string;
   name: string;
+  description: string;
   price: number;
   image: string;
+  buyUrl: string;
   category: string;
 }
 
@@ -124,6 +126,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
           id: `${clothingId}-${Date.now()}-${Math.random().toString(36).substring(7)}`,
           image: generatedImageUrl,
           clothing: clothingName,
+          clothingId: clothingId, // Pass the original clothing ID
         });
       }
 
@@ -169,11 +172,10 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
               }}
               onDragLeave={() => setDragActive(false)}
               onDrop={handleDrop}
-              className={`relative aspect-[3/4] rounded-2xl border-2 border-dashed transition-all cursor-pointer flex flex-col items-center justify-center gap-4 ${
-                dragActive
-                  ? "border-primary bg-primary/5"
-                  : "border-border hover:border-primary hover:bg-muted/50"
-              }`}
+              className={`relative aspect-[3/4] rounded-2xl border-2 border-dashed transition-all cursor-pointer flex flex-col items-center justify-center gap-4 ${dragActive
+                ? "border-primary bg-primary/5"
+                : "border-border hover:border-primary hover:bg-muted/50"
+                }`}
             >
               <input
                 type="file"

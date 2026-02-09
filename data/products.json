@@ -1,0 +1,74 @@
+[
+    {
+        "id": "elcapote-camisa-rosa-palo-cinta-lunares-hombre",
+        "name": "Camisa Rosa Palo Cinta Lunares Hombre",
+        "description": "El rosa palo se reinventa en esta camisa con un guiño original, con una delicada cinta de lunares en el interior. Un diseño con aire moderno que aporta elegancia. Perfecta para atuendos casuales y semiformales, perfecta para cualquier plan.",
+        "price": 69,
+        "image": "https://poloselcapote.com/cdn/shop/files/camisa_rosa_palo_9c55d3c3-02c6-4e2b-8747-cead0ebb2157.webp?v=1769193929&width=1440",
+        "buyUrl": "https://poloselcapote.com/products/camisa-hombre-azul-oxford-cinta-lunares-copia?variant=55740739158402",
+        "category": "Camisas"
+    },
+    {
+        "id": "elcapote-camisa-azul-oxford-cinta-lunares-hombre",
+        "name": "Camisa Azul Oxford Cinta Lunares Hombre",
+        "description": "El azul Oxford habla de distinción; los lunares, de tradición española. Una camisa que equilibra ambos mundos para el hombre que quiere vestir con clase, frescura y un sello inconfundible. Combínala con vaqueros oscuros o pantalones de pinza para un atuendo polifacético.",
+        "price": 69,
+        "image": "https://poloselcapote.com/cdn/shop/files/camisa_azul_lunares_palo_21475909-9040-49da-82f3-03744d8def59.webp?v=1766045882&width=1440",
+        "buyUrl": "https://poloselcapote.com/products/camisa-hombre-azul-oxford-lunares-copia?variant=55740727329154",
+        "category": "Camisas"
+    },
+    {
+        "id": "elcapote-jersey-azul-marino-coderas-rosa-hombre",
+        "name": "Jersey Azul Marino Coderas Rosa Hombre",
+        "description": "El contraste entre azul marino y el rosa recuerda a los cuadros de los artista españoles que combinan tradición y color. Un jersey pensado para quienes buscan comodidad y un toque creativo en su estilo  diario.",
+        "price": 69,
+        "image": "https://poloselcapote.com/cdn/shop/files/azul.webp?v=1765963826&width=1440",
+        "buyUrl": "https://poloselcapote.com/products/jersey-azul-marino-coderas-rosa-hombre-1?variant=55850588078466",
+        "category": "Jerseys"
+    },
+    {
+        "id": "elcapote-sudadera-gris-morante-hombre",
+        "name": "Sudadera Gris Morante Hombre",
+        "description": "Sudadera gris marengo con alma taurina, dedicada al arte de Morante de la Puebla, uno de los grandes referentes de nuestra tradición. En el pecho lleva el logo lineal de El Capote y en la espalda, aparece en grande el Hierro de Morante como protagonista de esta pieza, rindiendo homenaje directo al maestro Morante. La pequeña cinta con la bandera de España en la espalda remata esta prenda que respira cultura, pasión y raíces.",
+        "price": 79,
+        "image": "https://poloselcapote.com/cdn/shop/files/morante_suelta.jpg?v=1770214655&width=1800",
+        "buyUrl": "https://poloselcapote.com/products/sudadera-hombre-cuello-cremallera-gris-copia?variant=56003127607682",
+        "category": "Sudaderas"
+    },
+    {
+        "id": "elcapote-chaqueta-beige-cuello-pelo-desmontable-mujer",
+        "name": "Chaqueta Beige Cuello Pelo Desmontable Mujer",
+        "description": "Con un color que recuerda la calidez de la naturaleza y un cuello de pelo que invita a acurrucarse, esta chaqueta beige es un básico con identidad, ideal para atuendos urbanos o escapadas al aire libre.",
+        "price": 116,
+        "image": "https://poloselcapote.com/cdn/shop/files/CHAQUETAPELOSCAMEL.webp?v=1768997099&width=1440",
+        "buyUrl": "https://poloselcapote.com/products/jersey-blanco-roto-botones-mujer-copia?variant=55715489186178",
+        "category": "Jerseys"
+    },
+    {
+        "id": "elcapote-camisa-cuadro-caza-pechera-volantes-mujer",
+        "name": "Camisa Cuadro Caza Pechera Volantes Mujer",
+        "description": "Inspirada en las jornadas de caza y los paisajes del otoño español, esta camisa combina el carácter rústico de los cuadros con la feminidad de sus volantes. Una prenda que equilibra fuerza y dulzura.",
+        "price": 64,
+        "image": "https://poloselcapote.com/cdn/shop/files/BLUSA_CUADROSCHORRERAS_37358912-58e4-4bf5-b12c-6ad753fd1000.webp?v=1766047647&width=1440",
+        "buyUrl": "https://poloselcapote.com/products/camisa-cuadro-caza-pechera-volantes-mujer?variant=55809121354114",
+        "category": "Camisas"
+    },
+    {
+        "id": "elcapote-camisa-tartan-azul-y-rojo-mujer",
+        "name": "Camisa Tartán Azul y Rojo Mujer",
+        "description": "Inspirada en los inviernos españoles, el tartán azul y rojo refleja determinación y un estilo cargado de magnetismo. Llévala con un pantalón oscuro y un abrigo largo para un conjunto con identidad y con ese sello capotero inconfundible.",
+        "price": 59,
+        "image": "https://poloselcapote.com/cdn/shop/files/CAMISA_MUJER_CUADROS_ROJOS_9c3262a9-3713-4bda-8a92-cfbb35961087.webp?v=1768551049&width=1440",
+        "buyUrl": "https://poloselcapote.com/products/camisa-tartan-azul-y-verde-pechera-volantes-mujer-copia-2?variant=55740341387650",
+        "category": "Camisas"
+    },
+    {
+        "id": "elcapote-americana-cuadros-azul-mujer",
+        "name": "Americana Cuadros Azul Mujer",
+        "description": "Inspirada en la sofisticación española, está americana de cuadros azules combina estructura y libertad. Su patrón un aire moderno y desenfadado sin perder la elegancia características de El Capote.",
+        "price": 169,
+        "image": "https://poloselcapote.com/cdn/shop/files/AMERICANA_AZUL.webp?v=1768912480&width=1440",
+        "buyUrl": "https://poloselcapote.com/products/americana-cuadros-camel-mujer-copia?variant=55748959633794",
+        "category": "Prenda Exterior"
+    }
+]

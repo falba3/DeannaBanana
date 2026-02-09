@@ -11,32 +11,25 @@ import { getImageFileNames } from '../lib/image-utils';
 interface ClothingItem {
   id: string;
   name: string;
+  description: string;
   price: number;
   image: string;
+  buyUrl: string;
   category: string;
 }
 
 interface VirtualTryOnProps {
-  clothingImages: string[];
+  clothingItems: ClothingItem[];
   peopleImages: string[];
 }
 
-const VirtualTryOn = ({ clothingImages, peopleImages }: VirtualTryOnProps) => {
+const VirtualTryOn = ({ clothingItems, peopleImages }: VirtualTryOnProps) => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedClothing, setSelectedClothing] = useState<string[]>([]);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [generatedResults, setGeneratedResults] = useState<any[]>([]);
   const [bookId, setBookId] = useState<number | null>(null); // New state for bookId
-
-  // Create clothing items with dummy data for now
-  const clothingItems: ClothingItem[] = clothingImages.map((imageName, index) => ({
-    id: `clothing-${index}`,
-    name: imageName.replace(/\.(jpg|jpeg|png|gif|webp)$/i, '').replace(/-/g, ' '),
-    price: 50 + (index * 10),
-    image: `/clothes/${imageName}`,
-    category: "Apparel",
-  }));
 
   const steps = [
     { number: 1, title: "Choose Clothes", description: "Select items to try on" },
@@ -93,13 +86,12 @@ const VirtualTryOn = ({ clothingImages, peopleImages }: VirtualTryOnProps) => {
               <div key={step.number} className="flex items-center flex-1">
                 <div className="flex flex-col items-center flex-1">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold mb-2 transition-colors ${
-                      currentStep > step.number
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold mb-2 transition-colors ${currentStep > step.number
                         ? "bg-primary text-primary-foreground"
                         : currentStep === step.number
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
-                    }`}
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
+                      }`}
                   >
                     {currentStep > step.number ? (
                       <Check className="w-5 h-5" />
@@ -116,9 +108,8 @@ const VirtualTryOn = ({ clothingImages, peopleImages }: VirtualTryOnProps) => {
                 </div>
                 {index < steps.length - 1 && (
                   <div
-                    className={`h-0.5 flex-1 mx-4 transition-colors ${
-                      currentStep > step.number ? "bg-primary" : "bg-muted"
-                    }`}
+                    className={`h-0.5 flex-1 mx-4 transition-colors ${currentStep > step.number ? "bg-primary" : "bg-muted"
+                      }`}
                   />
                 )}
               </div>
@@ -131,7 +122,7 @@ const VirtualTryOn = ({ clothingImages, peopleImages }: VirtualTryOnProps) => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {currentStep === 1 && (
           <StepOne
-            clothingImages={clothingImages}
+            clothingItems={clothingItems}
             selectedClothing={selectedClothing}
             onSelectionChange={setSelectedClothing}
           />
@@ -153,6 +144,7 @@ const VirtualTryOn = ({ clothingImages, peopleImages }: VirtualTryOnProps) => {
             selectedClothing={selectedClothing}
             uploadedImage={uploadedImage}
             bookId={bookId} // Pass bookId to StepThree
+            clothingItems={clothingItems}
           />
         )}
       </main>
@@ -187,12 +179,16 @@ const VirtualTryOn = ({ clothingImages, peopleImages }: VirtualTryOnProps) => {
 export default VirtualTryOn;
 
 export async function getStaticProps() {
-  const clothingImages = await getImageFileNames('clothes');
+  const fs = require('fs');
+  const path = require('path');
+
+  const productsPath = path.join(process.cwd(), 'data', 'products.json');
+  const clothingItems = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
   const peopleImages = await getImageFileNames('people');
 
   return {
     props: {
-      clothingImages,
+      clothingItems,
       peopleImages,
     },
   };

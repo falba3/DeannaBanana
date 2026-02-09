@@ -11,37 +11,30 @@ import { getImageFileNames } from '../lib/image-utils';
 interface ClothingItem {
   id: string;
   name: string;
+  description: string;
   price: number;
   image: string;
+  buyUrl: string;
   category: string;
 }
 
 interface IndexProps {
-  clothingImages: string[];
+  clothingItems: ClothingItem[];
   peopleImages: string[];
 }
 
-const Index = ({ clothingImages, peopleImages }: IndexProps) => {
+const Index = ({ clothingItems, peopleImages }: IndexProps) => {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Create clothing items with dummy data for now
-  const clothingItems: ClothingItem[] = clothingImages.map((imageName, index) => ({
-    id: `clothing-${index}`,
-    name: imageName.replace(/\.(jpg|jpeg|png|gif|webp)$/i, '').replace(/-/g, ' '),
-    price: 50,
-    image: `/clothes/${imageName}`,
-    category: "Apparel",
-  }));
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
+  interface CartItem {
+    id: string;
+    name: string;
+    price: number;
+    image: string;
+    quantity: number;
+  }
 
   const handleAddToCart = (productId: string) => {
     const product = clothingItems.find(p => p.id === productId);
@@ -84,7 +77,7 @@ interface CartItem {
   return (
     <div className="min-h-screen bg-background">
       <Navbar cartCount={cartCount} onCartClick={() => setIsCartOpen(true)} />
-      
+
       <Hero onTryNowClick={handleTryNow} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -98,7 +91,7 @@ interface CartItem {
               View All →
             </Link>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
             {clothingItems.map((product) => (
               <ProductCard
@@ -117,7 +110,7 @@ interface CartItem {
           <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto font-medium">
             See how any piece from our collection looks on you with AI-powered visualization
           </p>
-          <button 
+          <button
             onClick={handleTryNow}
             className="bg-white text-foreground px-8 py-3 rounded-xl font-semibold hover:bg-white/90 transition-all shadow-strong hover:shadow-medium"
           >
@@ -128,7 +121,7 @@ interface CartItem {
 
       <footer className="border-t bg-muted/30 mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <h3 className="font-display text-xl font-bold mb-4">Deanna</h3>
               <p className="text-sm text-muted-foreground font-medium">
@@ -180,12 +173,16 @@ interface CartItem {
 export default Index;
 
 export async function getStaticProps() {
-  const clothingImages = await getImageFileNames('clothes');
+  const fs = require('fs');
+  const path = require('path');
+
+  const productsPath = path.join(process.cwd(), 'data', 'products.json');
+  const clothingItems = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
   const peopleImages = await getImageFileNames('people');
 
   return {
     props: {
-      clothingImages,
+      clothingItems,
       peopleImages,
     },
   };

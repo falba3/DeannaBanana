@@ -1,7 +1,7 @@
 import { Download, Share2, ShoppingCart, RotateCcw, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { useRouter } from "next/router"; 
+import { useRouter } from "next/router";
 import { useState } from "react";
 import Image from "next/image"; // Import Next.js Image component for optimization
 import {
@@ -37,8 +37,19 @@ interface Result {
   id: string;
   image: string;
   clothing: string;
+  clothingId?: string; // Optional property for original clothing ID
   generatedSituations?: SituationImage[]; // Optional property for generated situations
   isGeneratingSituations?: boolean; // Loading state for situations
+}
+
+interface ClothingItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  buyUrl: string;
+  category: string;
 }
 
 interface StepThreeProps {
@@ -46,9 +57,10 @@ interface StepThreeProps {
   selectedClothing: string[];
   uploadedImage: string | null;
   bookId: number | null; // New prop for bookId
+  clothingItems: ClothingItem[];
 }
 
-const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThreeProps) => {
+const StepThree = ({ results, selectedClothing, uploadedImage, bookId, clothingItems }: StepThreeProps) => {
   const router = useRouter();
   const [tryOnResults, setTryOnResults] = useState<Result[]>(results); // Use local state to manage results
 
@@ -91,8 +103,8 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThr
 
   const handleGenerateSituations = async (resultId: string, baseImage: string) => {
     if (!bookId) {
-        toast.error("Book ID is missing. Cannot generate situations.", { id: `situations-${resultId}` });
-        return;
+      toast.error("Book ID is missing. Cannot generate situations.", { id: `situations-${resultId}` });
+      return;
     }
 
     setTryOnResults(prevResults =>
@@ -104,53 +116,53 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThr
 
     // Iterate through SCENES and make individual API calls
     for (const scene of SCENES) {
-        toast.loading(`Generating ${scene.title}...`, { id: `situation-${resultId}-${scene.id}` });
-        try {
-            const response = await fetch('/api/generate-situations', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    baseImage,
-                    book_id: bookId,
-                    clothing_id: resultId,
-                    sceneId: scene.id, // Pass the specific scene ID
-                }),
-            });
+      toast.loading(`Generating ${scene.title}...`, { id: `situation-${resultId}-${scene.id}` });
+      try {
+        const response = await fetch('/api/generate-situations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            baseImage,
+            book_id: bookId,
+            clothing_id: resultId,
+            sceneId: scene.id, // Pass the specific scene ID
+          }),
+        });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || `Failed to generate ${scene.title}`);
-            }
-
-            const data = await response.json();
-            const newSituationImage: SituationImage = data.image; // API now returns a single image
-
-            // Update state incrementally for each generated situation
-            setTryOnResults(prevResults =>
-                prevResults.map(res =>
-                    res.id === resultId
-                        ? {
-                              ...res,
-                              generatedSituations: [...(res.generatedSituations || []), newSituationImage],
-                          }
-                        : res
-                )
-            );
-            toast.success(`${scene.title} generated!`, { id: `situation-${resultId}-${scene.id}` });
-
-        } catch (error: any) {
-            console.error(`Error generating ${scene.title}:`, error);
-            toast.error(error.message || `Failed to generate ${scene.title}.`, { id: `situation-${resultId}-${scene.id}` });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Failed to generate ${scene.title}`);
         }
+
+        const data = await response.json();
+        const newSituationImage: SituationImage = data.image; // API now returns a single image
+
+        // Update state incrementally for each generated situation
+        setTryOnResults(prevResults =>
+          prevResults.map(res =>
+            res.id === resultId
+              ? {
+                ...res,
+                generatedSituations: [...(res.generatedSituations || []), newSituationImage],
+              }
+              : res
+          )
+        );
+        toast.success(`${scene.title} generated!`, { id: `situation-${resultId}-${scene.id}` });
+
+      } catch (error: any) {
+        console.error(`Error generating ${scene.title}:`, error);
+        toast.error(error.message || `Failed to generate ${scene.title}.`, { id: `situation-${resultId}-${scene.id}` });
+      }
     }
 
     // After loop, set isGeneratingSituations to false
     setTryOnResults(prevResults =>
-        prevResults.map(res =>
-            res.id === resultId ? { ...res, isGeneratingSituations: false } : res
-        )
+      prevResults.map(res =>
+        res.id === resultId ? { ...res, isGeneratingSituations: false } : res
+      )
     );
     toast.success("All situations generated!", { id: `situations-main-${resultId}` });
   };
@@ -159,6 +171,19 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThr
     setZoomImageUrl(imageUrl);
     setZoomImageTitle(title);
     setIsZoomDialogOpen(true);
+  };
+
+  const handleBuy = (clothingId?: string) => {
+    if (!clothingId) {
+      toast.error("Product information is missing");
+      return;
+    }
+    const item = clothingItems.find(p => p.id === clothingId);
+    if (item?.buyUrl) {
+      window.open(item.buyUrl, "_blank", "noopener,noreferrer");
+    } else {
+      toast.error("Buy link not available for this item");
+    }
   };
 
   return (
@@ -204,7 +229,11 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThr
                       <Share2 className="w-4 h-4 mr-2" />
                       Share
                     </Button>
-                    <Button size="sm" variant="secondary">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => handleBuy(result.clothingId)}
+                    >
                       <ShoppingCart className="w-4 h-4 mr-2" />
                       Buy
                     </Button>
@@ -260,6 +289,25 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId }: StepThr
           </div>
         ))}
       </div>
+
+      {bookId && (
+        <div className="mb-12 flex flex-col items-center">
+          <div className="text-center mb-6">
+            <h3 className="font-display text-2xl font-bold mb-2 tracking-tight">Your Personal Ministore</h3>
+            <p className="text-muted-foreground font-medium">Explore your generated collection in our interactive widget</p>
+          </div>
+          <div className="rounded-3xl overflow-hidden border border-border bg-card shadow-strong p-1 bg-gradient-to-b from-border/50 to-background">
+            <iframe
+              width="275"
+              height="460.5"
+              src={`https://www.deanna2u.com/widget/single-book?message=&width=275&bookId=${bookId}&new_design=1`}
+              className="mx-auto block sm:scale-110 md:scale-125 my-8 md:my-12 lg:my-16"
+              style={{ border: 'none' }}
+              title="Deanna2u Ministore Widget"
+            />
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
         <Button size="lg" variant="outline" onClick={handleTryAgain}>

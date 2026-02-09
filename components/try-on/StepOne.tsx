@@ -4,26 +4,20 @@ import { cn } from "../../lib/utils";
 interface ClothingItem {
   id: string;
   name: string;
+  description: string;
   price: number;
   image: string;
+  buyUrl: string;
   category: string;
 }
 
 interface StepOneProps {
-  clothingImages: string[];
+  clothingItems: ClothingItem[];
   selectedClothing: string[];
   onSelectionChange: (items: string[]) => void;
 }
 
-const StepOne = ({ clothingImages, selectedClothing, onSelectionChange }: StepOneProps) => {
-  // Create clothing items with dummy data for now
-  const clothingItems: ClothingItem[] = clothingImages.map((imageName, index) => ({
-    id: `clothing-${index}`,
-    name: imageName.replace(/\.(jpg|jpeg|png|gif|webp)$/i, '').replace(/-/g, ' '),
-    price: 50,
-    image: `/clothes/${imageName}`,
-    category: "Apparel",
-  }));
+const StepOne = ({ clothingItems, selectedClothing, onSelectionChange }: StepOneProps) => {
 
   const handleItemClick = (itemId: string) => {
     if (selectedClothing.includes(itemId)) {
