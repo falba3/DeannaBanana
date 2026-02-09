@@ -1,9 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "deanna-banana-main-bananabucketdev.s3.us-east-1.amazonaws.com",
-      "poloselcapote.com"
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'deanna-banana-main-bananabucketdev.s3.us-east-1.amazonaws.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'poloselcapote.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.deanna2u.com',
+      },
     ],
   },
   async headers() {
