@@ -1,15 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orchestrated Try-On API Tester</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { max-width: 800px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: #0056b3; text-align: center; margin-bottom: 30px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input[type="text"], input[type="number"], textarea {
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
             width: calc(100% - 20px);
             padding: 10px;
             margin-bottom: 20px;
@@ -17,9 +44,11 @@
             border-radius: 4px;
             font-size: 16px;
         }
+
         input[type="checkbox"] {
             margin-right: 10px;
         }
+
         button {
             background-color: #007bff;
             color: white;
@@ -32,9 +61,11 @@
             margin-top: 10px;
             transition: background-color 0.2s ease;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         #response-container {
             margin-top: 30px;
             padding: 20px;
@@ -46,22 +77,33 @@
             max-height: 400px;
             overflow-y: auto;
         }
-        .form-group { margin-bottom: 20px; }
-        .checkbox-group { display: flex; align-items: center; margin-bottom: 20px; }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Orchestrated Try-On API Tester</h1>
 
         <div class="form-group">
             <label for="clothImageUrl">Clothing Image URL:</label>
-            <input type="text" id="clothImageUrl" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbONgZSebqLbfLWUVZC7RBTotX8ntBiei6CQ&s">
+            <input type="text" id="clothImageUrl"
+                value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbONgZSebqLbfLWUVZC7RBTotX8ntBiei6CQ&s">
         </div>
 
         <div class="form-group">
             <label for="personImageUrl">Person Image URL:</label>
-            <input type="text" id="personImageUrl" value="https://media.licdn.com/dms/image/v2/D4D03AQG5VyoISpu6Nw/profile-displayphoto-shrink_200_200/B4DZb.fqaeHEAY-/0/1748026435814?e=2147483647&v=beta&t=rRD-dt3Inppr5qUFwUiMt9hWklOpdjTp_i7g4jlpdvs">
+            <input type="text" id="personImageUrl"
+                value="https://media.licdn.com/dms/image/v2/D4D03AQG5VyoISpu6Nw/profile-displayphoto-shrink_200_200/B4DZb.fqaeHEAY-/0/1748026435814?e=2147483647&v=beta&t=rRD-dt3Inppr5qUFwUiMt9hWklOpdjTp_i7g4jlpdvs">
         </div>
 
         <div class="form-group">
@@ -76,7 +118,8 @@
 
         <div class="form-group">
             <label for="situationDescription">Situation Description (optional, if generating situations):</label>
-            <textarea id="situationDescription" rows="3" placeholder="e.g., person walking in a bustling city street"></textarea>
+            <textarea id="situationDescription" rows="3"
+                placeholder="e.g., person walking in a bustling city street"></textarea>
         </div>
 
         <div class="form-group">
@@ -84,10 +127,17 @@
             <input type="number" id="situationCount" value="3">
         </div>
 
+        <div class="form-group">
+            <label for="buyUrl">Buy URL (optional, defaults to generated image URL):</label>
+            <input type="text" id="buyUrl" placeholder="https://example.com/product/123"
+                value="https://poloselcapote.com/products/polo-classic-blanco">
+        </div>
+
         <button id="sendRequest">Send Orchestrated Try-On Request</button>
 
         <h2>Request Payload:</h2>
-        <div id="request-payload-container" style="margin-bottom: 20px; padding: 15px; background-color: #e8f0fe; border: 1px solid #c8d9f1; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto;">
+        <div id="request-payload-container"
+            style="margin-bottom: 20px; padding: 15px; background-color: #e8f0fe; border: 1px solid #c8d9f1; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto;">
             <p>Payload will appear here...</p>
         </div>
 
@@ -105,10 +155,12 @@
             const generateSituations = document.getElementById('generateSituations').checked;
             const situationDescription = document.getElementById('situationDescription').value;
             const situationCount = document.getElementById('situationCount').value;
+            const buyUrl = document.getElementById('buyUrl').value;
 
             const requestBody = {
                 clothImageUrl,
                 personImageUrl,
+                buyUrl: buyUrl || undefined,
             };
 
             if (userId) {
@@ -180,4 +232,5 @@
         });
     </script>
 </body>
+
 </html>

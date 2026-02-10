@@ -93,6 +93,9 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
       const allGeneratedResults: any[] = [];
 
       for (const selectedClothPath of clothImageNames) {
+        const currentItem = clothingItems.find(item => item.image === selectedClothPath);
+        const buyUrl = currentItem?.buyUrl || "";
+
         const response = await fetch('/api/generate', {
           method: 'POST',
           headers: {
@@ -102,6 +105,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
             cloth: selectedClothPath,
             person: uploadedImage, // uploadedImage is already a data URL
             book_id: newBookId, // Pass the newly created book ID
+            buyUrl: buyUrl, // Pass the buyUrl
           }),
         });
 

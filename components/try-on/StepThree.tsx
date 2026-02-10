@@ -118,6 +118,10 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId, clothingI
     for (const scene of SCENES) {
       toast.loading(`Generating ${scene.title}...`, { id: `situation-${resultId}-${scene.id}` });
       try {
+        const currentResult = tryOnResults.find(r => r.id === resultId);
+        const product = clothingItems.find(p => p.id === currentResult?.clothingId);
+        const buyUrl = product?.buyUrl || "";
+
         const response = await fetch('/api/generate-situations', {
           method: 'POST',
           headers: {
@@ -128,6 +132,7 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId, clothingI
             book_id: bookId,
             clothing_id: resultId,
             sceneId: scene.id, // Pass the specific scene ID
+            buyUrl: buyUrl, // Pass the buyUrl
           }),
         });
 

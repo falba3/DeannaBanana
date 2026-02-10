@@ -106,6 +106,7 @@ export async function POST(req: NextRequest) {
       generateSituations = true,
       situationDescription,
       situationCount = 3,
+      buyUrl,
     } = await req.json();
 
     if (!clothImageUrl || !personImageUrl) {
@@ -251,7 +252,7 @@ export async function POST(req: NextRequest) {
       thumbnail: tryOnImageUrl,
       useThumbnail: 1,
       type: 1,
-      url: tryOnImageUrl,
+      url: buyUrl || tryOnImageUrl,
       created: formattedDate,
       num: 1,
       migratedS3: 0,
@@ -327,7 +328,7 @@ export async function POST(req: NextRequest) {
               thumbnail: situationS3Url,
               useThumbnail: 1,
               type: 2,
-              url: situationS3Url,
+              url: buyUrl || situationS3Url,
               created: formattedDate,
               num: 1,
               migratedS3: 0,

@@ -75,7 +75,7 @@ async function fetchImageAsGenerativePart(imageUrl: string): Promise<any> {
 
 
 export async function POST(req: NextRequest) {
-  const { cloth, person, book_id } = await req.json();
+  const { cloth, person, book_id, buyUrl } = await req.json();
 
   if (!cloth || !person) {
     return NextResponse.json(
@@ -211,7 +211,7 @@ export async function POST(req: NextRequest) {
           thumbnail: publicS3Url || "",
           useThumbnail: 1,
           type: 1,
-          url: publicS3Url || "",
+          url: buyUrl || publicS3Url || "",
           created: formattedDate,
           num: 1,
           migratedS3: 0,
