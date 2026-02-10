@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MySQLConnector, BookData } from "../../../lib/mysql";
+import { validateApiToken } from "../../../lib/auth";
 
 export async function POST(req: NextRequest) {
+  // --- Auth Check ---
+  if (!validateApiToken(req)) {
+    return NextResponse.json(
+      { error: "Unauthorized: Invalid or missing API token." },
+      { status: 401 }
+    );
+  }
+
   const { cloth, person } = await req.json();
 
   if (!cloth || !person) {

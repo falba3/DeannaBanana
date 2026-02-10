@@ -2,6 +2,7 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/ge
 
 import { NextRequest, NextResponse } from "next/server";
 import { MySQLConnector, ClippingData } from "../../../lib/mysql";
+import { validateApiToken } from "../../../lib/auth";
 
 import fs from "fs";
 
@@ -75,6 +76,14 @@ async function fetchImageAsGenerativePart(imageUrl: string): Promise<any> {
 
 
 export async function POST(req: NextRequest) {
+  // --- Auth Check ---
+  if (!validateApiToken(req)) {
+    return NextResponse.json(
+      { error: "Unauthorized: Invalid or missing API token." },
+      { status: 401 }
+    );
+  }
+
   const { cloth, person, book_id, buyUrl } = await req.json();
 
   if (!cloth || !person) {

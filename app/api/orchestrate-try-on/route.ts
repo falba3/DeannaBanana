@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { MySQLConnector, BookData, ClippingData } from "../../../lib/mysql";
 import { uploadImageToS3 } from "../../../lib/upload-image";
+import { validateApiToken } from "../../../lib/auth";
 
 import fs from "fs";
 import path from "path";
@@ -98,6 +99,13 @@ export const maxDuration = 90; // Max duration for Vercel Serverless Function
 
 export async function POST(req: NextRequest) {
   let db: MySQLConnector | null = null; // Declare db outside try block for finally access
+  // --- Auth Check ---
+  if (!validateApiToken(req)) {
+    return NextResponse.json(
+      { error: "Unauthorized: Invalid or missing API token." },
+      { status: 401 }
+    );
+  }
   try {
     const {
       clothImageUrl,

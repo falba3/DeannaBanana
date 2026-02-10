@@ -54,6 +54,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
   const handleGenerate = async () => {
     if (!uploadedImage) return;
 
+    const apiToken = process.env.NEXT_PUBLIC_API_AUTH_TOKEN || "";
     setIsGenerating(true);
     toast.loading("Creating your virtual try-on...", { id: "generating" });
 

@@ -39,6 +39,10 @@
         Please make sure you have rebuilt and redeployed your Next.js app
         after the CORS changes.
     </p>
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label for="apiToken">API Auth Token:</label>
+        <input type="text" id="apiToken" placeholder="Enter your token here" style="padding: 10px; width: 300px;">
+    </div>
     <button id="testButton">Test API</button>
     <div id="status"></div>
     <h2>Response:</h2>
@@ -62,10 +66,12 @@
             const dummyBookId = 13233; // Or any valid number you use
 
             try {
+                const apiToken = document.getElementById('apiToken').value;
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'x-api-token': apiToken
                     },
                     body: JSON.stringify({
                         person: dummyPersonImage,
