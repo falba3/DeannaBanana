@@ -75,6 +75,8 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiToken}`,
+          'x-api-token': apiToken
         },
         body: JSON.stringify({
           cloth: clothImageNames[0], // Use the first selected cloth for book naming
@@ -101,6 +103,8 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiToken}`,
+            'x-api-token': apiToken
           },
           body: JSON.stringify({
             cloth: selectedClothPath,
