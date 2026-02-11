@@ -1,14 +1,11 @@
 import { NextRequest } from "next/server";
 
 /**
- * Validates the API token from headers.
- * Supports:
- * 1. x-api-token: <token>
- * 2. Authorization: <token> OR Authorization: Bearer <token>
- * 3. Same-origin fallback (allows the website to work even if build variables fail)
+ * Validates the API token.
+ * Supports: Headers (standard), Body (backup), and Same-Origin (safety net).
  */
-export function validateApiToken(req: NextRequest): boolean {
-    const clientToken = req.headers.get("x-api-token") || req.headers.get("Authorization");
+export function validateApiToken(req: NextRequest, tokenFromBody?: string): boolean {
+    const clientToken = tokenFromBody || req.headers.get("x-api-token") || req.headers.get("Authorization");
     const serverToken = process.env.API_AUTH_TOKEN;
 
     if (!serverToken) {
@@ -16,7 +13,7 @@ export function validateApiToken(req: NextRequest): boolean {
         return false;
     }
 
-    // 1. Token Check
+    // 1. Token Check (Header or Body)
     if (clientToken) {
         const cleanToken = clientToken.startsWith("Bearer ") ? clientToken.split(" ")[1] : clientToken;
         if (cleanToken === serverToken) {
@@ -33,10 +30,13 @@ export function validateApiToken(req: NextRequest): boolean {
         return true;
     }
 
-    console.warn("AUTH FAIL: No valid token and origin check failed.", {
+    // Debugging: Log what we ARE receiving to see if CloudFront is stripping headers
+    const receivedHeaders = Array.from(req.headers.keys()).join(", ");
+    console.warn("AUTH FAIL: No valid token found.", {
+        receivedHeaders,
         hasReferer: !!referer,
-        hostHeader: host,
-        refererHeader: referer
+        host,
+        serverTokenLength: serverToken.length
     });
 
     return false;

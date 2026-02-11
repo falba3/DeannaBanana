@@ -122,13 +122,10 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId, clothingI
         const product = clothingItems.find(p => p.id === currentResult?.clothingId);
         const buyUrl = product?.buyUrl || "";
 
-        const apiToken = process.env.NEXT_PUBLIC_API_AUTH_TOKEN || "";
         const response = await fetch('/api/generate-situations', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiToken}`,
-            'x-api-token': apiToken
           },
           body: JSON.stringify({
             baseImage,

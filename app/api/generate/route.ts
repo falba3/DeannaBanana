@@ -76,15 +76,16 @@ async function fetchImageAsGenerativePart(imageUrl: string): Promise<any> {
 
 
 export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const { cloth, person, book_id, buyUrl, api_token } = body;
+
   // --- Auth Check ---
-  if (!validateApiToken(req)) {
+  if (!validateApiToken(req, api_token)) {
     return NextResponse.json(
       { error: "Unauthorized: Invalid or missing API token." },
       { status: 401 }
     );
   }
-
-  const { cloth, person, book_id, buyUrl } = await req.json();
 
   if (!cloth || !person) {
     return NextResponse.json(

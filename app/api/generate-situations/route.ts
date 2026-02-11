@@ -60,15 +60,17 @@ function dataUrlToGenerativePart(dataUrl: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const { baseImage, book_id, clothing_id, sceneId, api_token } = body;
+
   // --- Auth Check ---
-  if (!validateApiToken(req)) {
+  if (!validateApiToken(req, api_token)) {
     return NextResponse.json(
       { error: "Unauthorized: Invalid or missing API token." },
       { status: 401 }
     );
   }
   try {
-    const { baseImage, book_id, clothing_id, sceneId } = await req.json(); // baseImage will be a data URL
 
     if (!baseImage) {
       return NextResponse.json(

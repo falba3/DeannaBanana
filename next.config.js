@@ -24,7 +24,7 @@ const nextConfig = {
           // { key: "Access-Control-Allow-Credentials", value: "true" }, // Removed as it conflicts with Access-Control-Allow-Origin: "*"
           { key: "Access-Control-Allow-Origin", value: "*" }, // Adjust this to specific domains in production
           { key: "Access-Control-Allow-Methods", value: "GET,DELETE,PATCH,POST,PUT" },
-          { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
+          { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, x-api-token" },
         ]
       }
     ]

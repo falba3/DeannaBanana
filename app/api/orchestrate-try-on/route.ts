@@ -99,23 +99,27 @@ export const maxDuration = 90; // Max duration for Vercel Serverless Function
 
 export async function POST(req: NextRequest) {
   let db: MySQLConnector | null = null; // Declare db outside try block for finally access
+  const body = await req.json();
+  const {
+    clothImageUrl,
+    personImageUrl,
+    userId = 221, // Default userId
+    generateSituations = true,
+    situationDescription,
+    situationCount = 3,
+    buyUrl,
+    api_token,
+  } = body;
+
   // --- Auth Check ---
-  if (!validateApiToken(req)) {
+  if (!validateApiToken(req, api_token)) {
     return NextResponse.json(
       { error: "Unauthorized: Invalid or missing API token." },
       { status: 401 }
     );
   }
+
   try {
-    const {
-      clothImageUrl,
-      personImageUrl,
-      userId = 221, // Default userId
-      generateSituations = true,
-      situationDescription,
-      situationCount = 3,
-      buyUrl,
-    } = await req.json();
 
     if (!clothImageUrl || !personImageUrl) {
       return NextResponse.json(
