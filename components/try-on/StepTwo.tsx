@@ -72,7 +72,16 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
     toast.loading("Generating your personal ministore...", { id: "generating" });
 
     try {
-      const clothImageNames = selectedClothing;
+      const clothImageNames = selectedClothing.map(id => {
+        const item = clothingItems.find(c => c.id === id);
+        return item ? item.image : ''; // Get the image path from clothingItems
+      }).filter(Boolean);
+
+      if (clothImageNames.length === 0) {
+        toast.error("Please select at least one clothing item.", { id: "generating" });
+        setIsGenerating(false);
+        return;
+      }
 
       const createBookResponse = await fetch('/api/create-book', {
         method: 'POST',
