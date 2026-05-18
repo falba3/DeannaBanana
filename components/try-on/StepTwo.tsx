@@ -139,7 +139,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
       }
 
       onGenerate(allGeneratedResults);
-      const bookUrl = `https://deanna.pro/${bookSlug}`;
+      const bookUrl = `https://deanna.pro/share/${bookSlug}`;
       toast.success(
         <div className="flex flex-col">
           <span>Here's a ministore with your generated photos!</span>
