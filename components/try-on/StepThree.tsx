@@ -58,10 +58,11 @@ interface StepThreeProps {
   selectedClothing: string[];
   uploadedImage: string | null;
   bookId: number | null; // New prop for bookId
+  bookSlug: string | null; // New prop for bookSlug
   clothingItems: ClothingItem[];
 }
 
-const StepThree = ({ results, selectedClothing, uploadedImage, bookId, clothingItems }: StepThreeProps) => {
+const StepThree = ({ results, selectedClothing, uploadedImage, bookId, bookSlug, clothingItems }: StepThreeProps) => {
   const router = useRouter();
   const [tryOnResults, setTryOnResults] = useState<Result[]>(results); // Use local state to manage results
 
@@ -296,22 +297,20 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId, clothingI
         ))}
       </div>
 
-      {bookId && (
-        <div className="mb-12 flex flex-col items-center">
+      {bookSlug && (
+        <div className="mb-12 flex flex-col items-center w-full">
           <div className="text-center mb-6">
             <h3 className="font-display text-2xl font-bold mb-2 tracking-tight">Your Personal Ministore</h3>
             <p className="text-muted-foreground font-medium">Explore your generated collection in our interactive widget</p>
           </div>
-          <div className="rounded-3xl overflow-hidden border border-border bg-card shadow-strong p-1 bg-gradient-to-b from-border/50 to-background">
-            <iframe
-              width="275"
-              height="460.5"
-              src={`https://www.deanna.es/widget/single-book?message=&width=275&bookId=${bookId}&new_design=0`}
-              className="mx-auto block sm:scale-110 md:scale-125 my-8 md:my-12 lg:my-16"
-              style={{ border: 'none' }}
-              title="Deanna2u Ministore Widget"
-            />
-          </div>
+          <iframe
+            src={`https://deanna.pro/embed/${bookSlug}`}
+            width="30%"
+            height="270"
+            frameBorder="0"
+            style={{ borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', minWidth: '320px' }}
+            title="Deanna Personal Ministore"
+          />
         </div>
       )}
 
