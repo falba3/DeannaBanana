@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog"; // Import Dialog components
+import { getSecureImageUrl } from "../../lib/utils";
 
 // Define SCENES array (copy from app/api/generate-situations/route.ts)
 const SCENES = [
@@ -271,11 +272,11 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId, clothingI
                     {result.generatedSituations.map(situation => (
                       <button // Changed div to button for clickability
                         key={situation.id}
-                        onClick={() => handleImageClick(situation.s3Url, situation.title)}
+                        onClick={() => handleImageClick(getSecureImageUrl(situation.s3Url), situation.title)}
                         className="relative aspect-square rounded-md overflow-hidden bg-muted cursor-pointer"
                       >
                         <Image
-                          src={situation.s3Url}
+                          src={getSecureImageUrl(situation.s3Url)}
                           alt={situation.title}
                           fill
                           style={{ objectFit: "cover" }}

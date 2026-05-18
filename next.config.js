@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'www.deanna.es',
       },
+      {
+        protocol: 'https',
+        hostname: 'djkij976c4d2r.cloudfront.net',
+      },
     ],
   },
   async headers() {
