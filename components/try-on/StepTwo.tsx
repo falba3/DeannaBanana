@@ -236,7 +236,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
             <Button
               size="lg"
               className="w-full mt-8"
-              onClick={handleGenerate}
+              onClick={handleGenerateClick}
               disabled={isGenerating}
             >
               {isGenerating ? (
