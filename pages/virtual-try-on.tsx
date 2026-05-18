@@ -30,6 +30,7 @@ const VirtualTryOn = ({ clothingItems, peopleImages }: VirtualTryOnProps) => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [generatedResults, setGeneratedResults] = useState<any[]>([]);
   const [bookId, setBookId] = useState<number | null>(null); // New state for bookId
+  const [bookSlug, setBookSlug] = useState<string | null>(null); // New state for bookSlug
 
   const steps = [
     { number: 1, title: "Choose Clothes", description: "Select items to try on" },
@@ -135,7 +136,10 @@ const VirtualTryOn = ({ clothingItems, peopleImages }: VirtualTryOnProps) => {
             onImageUpload={setUploadedImage}
             selectedClothing={selectedClothing}
             onGenerate={handleGenerate}
-            onBookCreate={setBookId} // Pass setBookId to StepTwo
+            onBookCreate={(id, slug) => {
+              setBookId(id);
+              setBookSlug(slug);
+            }} // Pass setter function for bookId and bookSlug
           />
         )}
         {currentStep === 3 && (
@@ -144,6 +148,7 @@ const VirtualTryOn = ({ clothingItems, peopleImages }: VirtualTryOnProps) => {
             selectedClothing={selectedClothing}
             uploadedImage={uploadedImage}
             bookId={bookId} // Pass bookId to StepThree
+            bookSlug={bookSlug} // Pass bookSlug to StepThree
             clothingItems={clothingItems}
           />
         )}

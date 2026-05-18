@@ -24,9 +24,10 @@ export async function uploadImageToS3(
 
   try {
     await s3Client.send(new PutObjectCommand(uploadParams));
-    // The public URL should include the region dynamically.
-    const publicUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${key}`;
-    console.log(`Image uploaded to S3: ${publicUrl}`);
+    // Return the secure CloudFront CDN URL directly.
+    const cfDomain = process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN || "djkij976c4d2r.cloudfront.net";
+    const publicUrl = `https://${cfDomain}/${key}`;
+    console.log(`Image uploaded to S3 and served via CloudFront: ${publicUrl}`);
     return publicUrl;
   } catch (error: unknown) {
     console.error("Error uploading image to S3:", error);

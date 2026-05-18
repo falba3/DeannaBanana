@@ -20,7 +20,7 @@ interface StepTwoProps {
   onImageUpload: (image: string) => void;
   selectedClothing: string[];
   onGenerate: (results: any[]) => void;
-  onBookCreate: (bookId: number) => void; // New prop for bookId setter
+  onBookCreate: (bookId: number, bookSlug: string) => void; // New prop for bookId and bookSlug setter
 }
 
 const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, selectedClothing, onGenerate, onBookCreate }: StepTwoProps) => {
@@ -43,40 +43,44 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
     reader.readAsDataURL(file);
   };
 
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFileUpload(e.dataTransfer.files[0]);
     }
   };
 
-  const handleGenerate = async () => {
-    if (!uploadedImage) return;
+  const handleGenerateClick = async () => {
+    if (!uploadedImage) {
+      toast.error("Please upload a photo first");
+      return;
+    }
 
     setIsGenerating(true);
-    toast.loading("Creating your virtual try-on...", { id: "generating" });
+    toast.loading("Generating your personal ministore...", { id: "generating" });
 
     try {
-      const clothImageNames = selectedClothing.map(id => {
-        const item = clothingItems.find(c => c.id === id);
-        return item ? item.image : ''; // Get the image path from clothingItems
-      }).filter(Boolean);
+      const clothImageNames = selectedClothing;
 
-      if (clothImageNames.length === 0) {
-        toast.error("Please select at least one clothing item.", { id: "generating" });
-        setIsGenerating(false);
-        return;
-      }
-
-      // 1. Create the book first
       const createBookResponse = await fetch('/api/create-book', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          cloth: clothImageNames[0], // Use the first selected cloth for book naming
+          cloth: clothImageNames[0],
           person: uploadedImage,
         }),
       });
@@ -87,7 +91,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
       }
 
       const { bookId: newBookId, bookSlug } = await createBookResponse.json();
-      onBookCreate(newBookId); // Call the prop to update bookId in parent
+      onBookCreate(newBookId, bookSlug); // Call the prop to update bookId and bookSlug in parent
 
 
       const allGeneratedResults: any[] = [];
@@ -135,7 +139,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
       }
 
       onGenerate(allGeneratedResults);
-      const bookUrl = `https://deanna.pro/${bookSlug}`;
+      const bookUrl = `https://deanna.pro/share/${bookSlug}`;
       toast.success(
         <div className="flex flex-col">
           <span>Here's a ministore with your generated photos!</span>
@@ -232,7 +236,7 @@ const StepTwo = ({ clothingItems, peopleImages, uploadedImage, onImageUpload, se
             <Button
               size="lg"
               className="w-full mt-8"
-              onClick={handleGenerate}
+              onClick={handleGenerateClick}
               disabled={isGenerating}
             >
               {isGenerating ? (
