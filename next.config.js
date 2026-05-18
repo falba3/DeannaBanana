@@ -12,7 +12,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.deanna2u.com',
+        hostname: 'www.deanna.es',
       },
     ],
   },
