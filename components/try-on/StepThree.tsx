@@ -305,7 +305,7 @@ const StepThree = ({ results, selectedClothing, uploadedImage, bookId, clothingI
             <iframe
               width="275"
               height="460.5"
-              src={`https://www.deanna2u.com/widget/single-book?message=&width=275&bookId=${bookId}&new_design=1`}
+              src={`https://www.deanna.es/widget/single-book?message=&width=275&bookId=${bookId}&new_design=0`}
               className="mx-auto block sm:scale-110 md:scale-125 my-8 md:my-12 lg:my-16"
               style={{ border: 'none' }}
               title="Deanna2u Ministore Widget"
